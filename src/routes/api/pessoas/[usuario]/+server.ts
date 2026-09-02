@@ -54,10 +54,14 @@ export async function PATCH({ params, request, cookies }: { params: Record<strin
 
   try {
     const body = await request.json();
-    assertPessoaPayload(body);
+    assertPessoaPayload(body, { requireIdentity: false });
 
     if (typeof body.usuario === 'string' && body.usuario !== usuario) {
       return json({ error: 'O usuário não pode ser alterado.' }, { status: 400 });
+    }
+
+    if ('idEmpresa' in body && body.idEmpresa !== pessoa.idEmpresa) {
+      return json({ error: 'O ID da empresa não pode ser alterado.' }, { status: 400 });
     }
 
     const alocacao = await getAlocacaoPorUsuario(usuario);
@@ -68,7 +72,12 @@ export async function PATCH({ params, request, cookies }: { params: Record<strin
     const atualizada = {
       nome: typeof body.nome === 'string' ? body.nome.trim() : pessoa.nome,
       usuario: pessoa.usuario,
+      idEmpresa: pessoa.idEmpresa,
+      email: typeof body.email === 'string' ? body.email : pessoa.email ?? null,
+      telefone: typeof body.telefone === 'string' ? body.telefone : pessoa.telefone ?? null,
+      cracha: typeof body.cracha === 'string' ? body.cracha : pessoa.cracha ?? null,
       setor: body.setor === null ? null : typeof body.setor === 'string' ? body.setor : pessoa.setor,
+      acessoPortaExterna: typeof body.acessoPortaExterna === 'boolean' ? body.acessoPortaExterna : pessoa.acessoPortaExterna ?? false,
       ativo: typeof body.ativo === 'boolean' ? body.ativo : pessoa.ativo,
       observacoes: typeof body.observacoes === 'string' ? body.observacoes : pessoa.observacoes
     };

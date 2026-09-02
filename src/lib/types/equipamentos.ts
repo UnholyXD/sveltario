@@ -81,7 +81,12 @@ export interface OutroEquipamento {
 export interface Pessoa {
   nome: string;
   usuario: string;
+  idEmpresa: string;
+  email: string | null;
+  telefone: string | null;
+  cracha: string | null;
   setor: string | null;
+  acessoPortaExterna: boolean;
   ativo: boolean;
   observacoes: string;
 }
