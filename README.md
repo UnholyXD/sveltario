@@ -1,42 +1,42 @@
-# sv
+# Sveltario
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+Aplicação web para gerenciamento de equipamentos e colaboradores, construída com SvelteKit.
 
-## Creating a project
+[![Svelte](https://img.shields.io/badge/Svelte-5-FF3E00?logo=svelte&logoColor=white)](https://svelte.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Vite](https://img.shields.io/badge/Vite-8-646CFF?logo=vite&logoColor=white)](https://vite.dev/)
+[![GitHub stars](https://img.shields.io/github/stars/UnholyXD/sveltario?style=flat-square)](https://github.com/UnholyXD/sveltario/stargazers)
+[![GitHub issues](https://img.shields.io/github/issues/UnholyXD/sveltario?style=flat-square)](https://github.com/UnholyXD/sveltario/issues)
 
-If you're seeing this, you've probably already done this step. Congrats!
+## Como rodar
 
-```sh
-# create a new project
-npx sv create my-app
+Pré-requisitos: [Node.js](https://nodejs.org/) e npm instalados.
+
+1. Clone o repositório e entre na pasta:
+
+   ```bash
+   git clone https://github.com/UnholyXD/sveltario.git
+   cd sveltario
+   ```
+
+2. Instale as dependências:
+
+   ```bash
+   npm install
+   ```
+
+3. Inicie o servidor de desenvolvimento:
+
+   ```bash
+   npm run dev
+   ```
+
+   Acesse [http://localhost:5173](http://localhost:5173). Para abrir o navegador automaticamente, use `npm run dev -- --open`.
+
+## Outros comandos
+
+```bash
+npm run check    # verifica tipos e arquivos Svelte
+npm run build    # gera a versão de produção
+npm run preview  # visualiza a build de produção localmente
 ```
-
-To recreate this project with the same configuration:
-
-```sh
-# recreate this project
-npx sv@0.17.0 create --template minimal --types ts --install npm sveltario
-```
-
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```sh
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-## Building
-
-To create a production version of your app:
-
-```sh
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
