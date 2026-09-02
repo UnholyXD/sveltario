@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "items": [
+    {
+      "patrimonio": "C001",
+      "marca": "Dell",
+      "modelo": "OptiPlex 3050",
+      "serviceTag": "A863D4S",
+      "hostname": "DBX-DEV-0042",
+      "processador": "Intel Core i3-6100T",
+      "memoriaRamGb": 8,
+      "armazenamento": [
+        {
+          "tipo": "SSD",
+          "modelo": "HS-SSD-C100",
+          "capacidadeGb": 120
+        }
+      ],
+      "estado": "bom",
+      "observacoes": ""
+    }
+  ]
+}

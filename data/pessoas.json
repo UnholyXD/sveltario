@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "items": [
+    {
+      "nome": "Fernanda",
+      "usuario": "DB27",
+      "setor": null,
+      "ativo": true,
+      "observacoes": ""
+    },
+    {
+      "nome": "Bruno",
+      "usuario": "DB31",
+      "setor": null,
+      "ativo": true,
+      "observacoes": ""
+    }
+  ]
+}

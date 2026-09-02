@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "items": [
+    {
+      "usuario": "DB27",
+      "equipamentos": []
+    },
+    {
+      "usuario": "DB31",
+      "equipamentos": [
+        {
+          "tipo": "computador",
+          "id": "C001"
+        }
+      ]
+    }
+  ]
+}
