@@ -1,4 +1,4 @@
-export const VALID_EQUIPMENT_TYPES = ['computador', 'monitor', 'mouse', 'teclado', 'fone'] as const;
+export const VALID_EQUIPMENT_TYPES = ['computador', 'monitor', 'mouse', 'teclado', 'fone', 'outros'] as const;
 export const VALID_STATES = ['novo', 'bom', 'marcas_de_uso', 'danificado', 'manutencao', 'baixado'] as const;
 
 export type EquipmentType = (typeof VALID_EQUIPMENT_TYPES)[number];

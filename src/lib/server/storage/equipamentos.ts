@@ -8,7 +8,8 @@ const equipmentFiles: Record<EquipmentType, string> = {
   monitor: 'monitor.json',
   mouse: 'mouse.json',
   teclado: 'teclado.json',
-  fone: 'fone.json'
+  fone: 'fone.json',
+  outros: 'outros.json'
 };
 
 export type EquipmentCollection<T = Record<string, unknown>> = JsonCollection<T>;

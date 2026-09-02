@@ -70,6 +70,22 @@ function normalizePayload(tipo: string, payload: Record<string, unknown>) {
     };
   }
 
+  if (tipo === 'outros') {
+    assertRequiredFields(payload, ['categoria', 'estado']);
+    if (typeof payload.categoria !== 'string' || payload.categoria.trim() === '') {
+      throw new Error('Categoria é obrigatória.');
+    }
+    assertValidState(payload.estado);
+
+    return {
+      ...payload,
+      id: '',
+      numeroSerie: payload.numeroSerie ?? null,
+      patrimonio: payload.patrimonio ?? null,
+      observacoes: typeof payload.observacoes === 'string' ? payload.observacoes : ''
+    };
+  }
+
   throw new Error('Tipo de equipamento inválido.');
 }
 
@@ -121,7 +137,7 @@ export async function POST({ params, request, cookies }: { params: Record<string
       assertUniqueIdentifier(items as Array<Record<string, unknown>>, 'patrimonio', normalizedRecord.patrimonio, 'Equipamento');
     }
 
-    if (tipo === 'mouse' || tipo === 'teclado' || tipo === 'fone') {
+    if (tipo === 'mouse' || tipo === 'teclado' || tipo === 'fone' || tipo === 'outros') {
       const id = await nextGenericId(tipo);
       const item = { ...normalized, id };
       items.push(item as never);

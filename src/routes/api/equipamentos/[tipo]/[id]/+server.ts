@@ -12,7 +12,7 @@ function ensureNotChangingIdentifier(tipo: string, payload: Record<string, unkno
     }
   }
 
-  if (tipo === 'mouse' || tipo === 'teclado' || tipo === 'fone') {
+  if (tipo === 'mouse' || tipo === 'teclado' || tipo === 'fone' || tipo === 'outros') {
     if ('id' in payload && String(payload.id) !== id) {
       throw new Error('O identificador do equipamento não pode ser alterado.');
     }
@@ -81,6 +81,10 @@ export async function PATCH({ params, request, cookies }: { params: Record<strin
       if (!merged.patrimonio || !merged.marca || !merged.modelo || !merged.numeroSerie) {
         throw new Error('Dados do monitor incompletos.');
       }
+    }
+
+    if (tipo === 'outros' && (typeof merged.categoria !== 'string' || merged.categoria.trim() === '')) {
+      throw new Error('Categoria é obrigatória.');
     }
 
     items[index] = merged as never;

@@ -1,4 +1,4 @@
-export type EstadoEquipamento = 'bom' | 'manutencao' | 'defeito' | 'inativo';
+export type EstadoEquipamento = 'novo' | 'bom' | 'marcas_de_uso' | 'danificado' | 'manutencao' | 'baixado';
 
 export interface ArmazenamentoItem {
   tipo: string;
@@ -67,6 +67,17 @@ export interface Fone {
   observacoes: string;
 }
 
+export interface OutroEquipamento {
+  id: string;
+  categoria: string;
+  marca?: string;
+  modelo?: string;
+  numeroSerie?: string | null;
+  patrimonio?: string | null;
+  estado: EstadoEquipamento;
+  observacoes?: string;
+}
+
 export interface Pessoa {
   nome: string;
   usuario: string;
@@ -76,7 +87,7 @@ export interface Pessoa {
 }
 
 export interface AlocacaoEquipamento {
-  tipo: 'computador' | 'monitor' | 'mouse' | 'teclado' | 'fone';
+  tipo: 'computador' | 'monitor' | 'mouse' | 'teclado' | 'fone' | 'outros';
   id: string;
 }
 

@@ -7,6 +7,7 @@ export type DataKind =
   | 'mouse'
   | 'teclado'
   | 'fone'
+  | 'outros'
   | 'pessoas'
   | 'alocacoes';
 
@@ -16,6 +17,7 @@ export const DATA_FILES: Record<DataKind, string> = {
   mouse: 'mouse.json',
   teclado: 'teclado.json',
   fone: 'fone.json',
+  outros: 'outros.json',
   pessoas: 'pessoas.json',
   alocacoes: 'alocacoes.json'
 };

@@ -6,6 +6,7 @@ export type CounterRecord = {
   mouse: number;
   teclado: number;
   fone: number;
+  outros: number;
 };
 
 const counterPath = path.join(configDirectory, 'contadores.json');
@@ -13,7 +14,7 @@ const counterPath = path.join(configDirectory, 'contadores.json');
 export async function readCounters(): Promise<CounterRecord> {
   const data = await readJsonFile<CounterRecord>(counterPath, { requireCollection: false });
 
-  if (!data || typeof data !== 'object' || !('version' in data) || !('mouse' in data) || !('teclado' in data) || !('fone' in data)) {
+  if (!data || typeof data !== 'object' || !('version' in data) || !('mouse' in data) || !('teclado' in data) || !('fone' in data) || !('outros' in data)) {
     throw new Error('Arquivo de contadores inválido.');
   }
 
@@ -22,16 +23,18 @@ export async function readCounters(): Promise<CounterRecord> {
     version: Number(counter.version ?? 1),
     mouse: Number(counter.mouse ?? 0),
     teclado: Number(counter.teclado ?? 0),
-    fone: Number(counter.fone ?? 0)
+    fone: Number(counter.fone ?? 0),
+    outros: Number(counter.outros ?? 0)
   };
 }
 
-export async function nextGenericId(tipo: 'mouse' | 'teclado' | 'fone'): Promise<string> {
+export async function nextGenericId(tipo: 'mouse' | 'teclado' | 'fone' | 'outros'): Promise<string> {
   const counters = await readCounters();
   const prefixMap = {
     mouse: 'MOU',
     teclado: 'TEC',
-    fone: 'FON'
+    fone: 'FON',
+    outros: 'OUT'
   } as const;
 
   const key = tipo;
