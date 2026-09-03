@@ -1,0 +1,11 @@
+.card h3,
+.panel h3 {
+  margin: 0 0 var(--space-2);
+}
+
+.card p,
+.panel p {
+  margin: 0 0 var(--space-4);
+  color: var(--color-text-muted);
+  line-height: var(--line-height-base);
+}

@@ -9,14 +9,3 @@
   {/if}
   {@render children()}
 </section>
-
-<style>
-  h3 {
-    margin: 0 0 0.5rem;
-  }
-
-  p {
-    margin: 0 0 1rem;
-    color: #53657c;
-  }
-</style>

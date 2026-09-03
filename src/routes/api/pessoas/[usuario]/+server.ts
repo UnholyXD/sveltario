@@ -27,7 +27,8 @@ export async function GET({ params }: { params: Record<string, string> }) {
           tipo: item.tipo,
           id: item.id,
           marca: typeof entry.marca === 'string' ? entry.marca : '',
-          modelo: typeof entry.modelo === 'string' ? entry.modelo : ''
+          modelo: typeof entry.modelo === 'string' ? entry.modelo : '',
+          estado: typeof entry.estado === 'string' ? entry.estado : ''
         });
       }
     }

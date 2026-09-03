@@ -4,6 +4,15 @@
 @import './forms.css';
 @import './tables.css';
 @import './cards.css';
+@import './navbar.css';
+@import './home.css';
+@import './login.css';
+@import './people.css';
+@import './person-card.css';
+@import './section-card.css';
+@import './person-details.css';
+@import './edit-person-modal.css';
+@import './equipment.css';
 
 * {
   box-sizing: border-box;

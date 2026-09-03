@@ -1,0 +1,26 @@
+.people-page {
+  min-height: calc(100vh - 4.5rem);
+}
+
+.eyebrow {
+  margin: 0 0 var(--space-2);
+  color: var(--color-primary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.people-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  gap: var(--space-5);
+}
+
+.state-message {
+  text-align: center;
+}
+
+.state-message p {
+  margin: 0;
+}
