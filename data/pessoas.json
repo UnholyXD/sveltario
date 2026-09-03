@@ -2,15 +2,19 @@
   "version": 1,
   "items": [
     {
-      "nome": "Fernanda",
-      "usuario": "DB27",
+      "nome": "teste1",
+      "usuario": "teste1",
+      "email": null,
+      "telefone": null,
+      "cracha": null,
       "setor": null,
+      "acessoPortaExterna": true,
       "ativo": true,
       "observacoes": ""
     },
     {
-      "nome": "Bruno",
-      "usuario": "DB31",
+      "nome": "Teste2",
+      "usuario": "teste2",
       "setor": null,
       "ativo": true,
       "observacoes": ""

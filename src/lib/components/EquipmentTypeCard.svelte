@@ -1,9 +1,10 @@
 <script lang="ts">
-  let { label, count, active = false, onSelect }: {
+  let { label, count, active = false, onSelect, onAdd }: {
     label: string;
     count: number;
     active?: boolean;
     onSelect: () => void;
+    onAdd: () => void;
   } = $props();
 </script>
 
@@ -33,5 +34,5 @@
     <strong>{label}</strong>
     <span>{count} {count === 1 ? 'item' : 'itens'}</span>
   </span>
-  <span class="equipment-type-card__add" aria-hidden="true" title="Cadastro em breve">+</span>
+  <span class="equipment-type-card__add" role="button" tabindex="0" aria-label={`Adicionar ${label}`} title={`Adicionar ${label}`} onclick={(event) => { event.stopPropagation(); onAdd(); }} onkeydown={(event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); event.stopPropagation(); onAdd(); } }}>+</span>
 </button>

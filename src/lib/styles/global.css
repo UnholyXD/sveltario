@@ -13,6 +13,7 @@
 @import './person-details.css';
 @import './edit-person-modal.css';
 @import './equipment.css';
+@import './allocation-modal.css';
 
 * {
   box-sizing: border-box;

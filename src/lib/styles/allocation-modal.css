@@ -1,0 +1,16 @@
+.allocation-dialog { width: min(100%, 58rem); }
+.allocation-heading, .allocation-search-row { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); }
+.allocation-heading { margin-bottom: var(--space-5); }
+.allocation-heading h2 { margin: 0; }
+.allocation-close { min-width: 2.5rem; padding-inline: var(--space-2); font-size: var(--font-size-lg); }
+.allocation-selected { margin: 0 0 var(--space-5); color: var(--color-text-muted); }
+.allocation-search-row input { flex: 1; }
+.allocation-results { display: grid; gap: var(--space-2); margin-top: var(--space-3); }
+.allocation-results button { padding: var(--space-3); border: var(--border-width) solid var(--color-border); border-radius: var(--radius-sm); background: var(--color-surface); color: var(--color-text); text-align: left; cursor: pointer; }
+.allocation-results button:hover, .allocation-results button:focus-visible { border-color: var(--color-primary); outline: none; }
+.allocation-type { margin-top: var(--space-5); max-width: 22rem; }
+.allocation-table-wrapper { margin-top: var(--space-5); }
+.allocation-table { min-width: 48rem; }
+.allocation-message { margin: var(--space-5) 0 0; color: var(--color-text-muted); }
+.allocation-actions { justify-content: flex-end; }
+@media (max-width: 600px) { .allocation-search-row { align-items: stretch; flex-direction: column; } .allocation-search-row button { width: 100%; } }

@@ -4,6 +4,7 @@
   import PersonDetailsCard from '$lib/components/PersonDetailsCard.svelte';
   import AllocatedEquipmentTable from '$lib/components/AllocatedEquipmentTable.svelte';
   import EditPersonModal from '$lib/components/EditPersonModal.svelte';
+  import AllocationModal from '$lib/components/AllocationModal.svelte';
 
   type Person = {
     nome: string;
@@ -33,8 +34,9 @@
   let naoEncontrado = $state(false);
   let erro = $state(false);
   let editando = $state(false);
+  let alocando = $state(false);
 
-  onMount(async () => {
+  async function carregarDetalhe() {
     try {
       const response = await fetch(`/api/pessoas/${encodeURIComponent(data.usuario)}`);
       if (response.status === 404) {
@@ -54,7 +56,9 @@
     } finally {
       carregando = false;
     }
-  });
+  }
+
+  onMount(carregarDetalhe);
 </script>
 
 <svelte:head>
@@ -71,13 +75,21 @@
   {:else if erro || !pessoa}
     <section class="card panel detail-state" role="alert"><p>Não foi possível carregar os dados do colaborador.</p></section>
   {:else}
-    <PersonDetailsCard {pessoa} onEdit={() => editando = true} />
+    <PersonDetailsCard {pessoa} onEdit={() => editando = true} onAllocate={() => alocando = true} />
     <section class="allocated-section card panel" aria-labelledby="allocated-title">
       <div class="allocated-heading">
         <h2 id="allocated-title">Equipamentos alocados</h2>
       </div>
       <AllocatedEquipmentTable {equipamentos} />
     </section>
+  {/if}
+
+  {#if alocando && pessoa}
+    <AllocationModal
+      initialPerson={{ nome: pessoa.nome, usuario: pessoa.usuario }}
+      onClose={() => alocando = false}
+      onSaved={carregarDetalhe}
+    />
   {/if}
 </main>
 

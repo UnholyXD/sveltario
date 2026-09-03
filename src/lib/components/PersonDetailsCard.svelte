@@ -12,7 +12,7 @@
     observacoes?: string | null;
   };
 
-  let { pessoa, onEdit }: { pessoa: Person; onEdit: () => void } = $props();
+  let { pessoa, onEdit, onAllocate }: { pessoa: Person; onEdit: () => void; onAllocate: () => void } = $props();
 </script>
 
 <section class="person-details card panel" aria-labelledby="person-name">
@@ -29,10 +29,13 @@
         <h1 id="person-name">{pessoa.nome}</h1>
         <p class="person-details__username">ID Dinabox: {pessoa.usuario}</p>
       </div>
+      <div class="person-details__actions">
+      <button class="button--secondary" type="button" aria-label="Alocar equipamento" onclick={onAllocate}>Alocar</button>
       <button class="button--secondary" type="button" aria-label="Editar pessoa" onclick={onEdit}>
         <span aria-hidden="true">⚙</span>
         Editar
       </button>
+      </div>
     </div>
 
     <dl class="person-details__fields">
