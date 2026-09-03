@@ -12,7 +12,7 @@
     observacoes?: string | null;
   };
 
-  let { pessoa, onEdit, onAllocate }: { pessoa: Person; onEdit: () => void; onAllocate: () => void } = $props();
+  let { pessoa, autenticado = false, onEdit }: { pessoa: Person; autenticado?: boolean; onEdit: () => void } = $props();
 </script>
 
 <section class="person-details card panel" aria-labelledby="person-name">
@@ -29,20 +29,22 @@
         <h1 id="person-name">{pessoa.nome}</h1>
         <p class="person-details__username">ID Dinabox: {pessoa.usuario}</p>
       </div>
+      {#if autenticado}
       <div class="person-details__actions">
-      <button class="button--secondary" type="button" aria-label="Alocar equipamento" onclick={onAllocate}>Alocar</button>
       <button class="button--secondary" type="button" aria-label="Editar pessoa" onclick={onEdit}>
         <span aria-hidden="true">⚙</span>
         Editar
       </button>
       </div>
+      {/if}
     </div>
 
     <dl class="person-details__fields">
-      <div><dt>E-mail</dt><dd>{pessoa.email || 'Não informado'}</dd></div>
-      <div><dt>Telefone</dt><dd>{pessoa.telefone || 'Não informado'}</dd></div>
-      <div><dt>ID Empresa</dt><dd>{pessoa.idEmpresa || 'Não informado'}</dd></div>
-      <div>
+      {#if autenticado}
+        <div><dt>E-mail</dt><dd>{pessoa.email || 'Não informado'}</dd></div>
+        <div><dt>Telefone</dt><dd>{pessoa.telefone || 'Não informado'}</dd></div>
+        <div><dt>ID Empresa</dt><dd>{pessoa.idEmpresa || 'Não informado'}</dd></div>
+        <div>
         <dt>Crachá</dt>
         <dd class="badge-detail">
           {pessoa.cracha || 'Não informado'}
@@ -51,12 +53,15 @@
             Acesso à porta externa: {pessoa.acessoPortaExterna ? 'Sim' : 'Não'}
           </span>
         </dd>
-      </div>
+        </div>
+      {/if}
       <div><dt>Setor</dt><dd>{pessoa.setor || 'Não informado'}</dd></div>
-      <div><dt>Status</dt><dd>{pessoa.ativo === false ? 'Inativo' : 'Ativo'}</dd></div>
+      {#if autenticado}
+        <div><dt>Status</dt><dd>{pessoa.ativo === false ? 'Inativo' : 'Ativo'}</dd></div>
+      {/if}
     </dl>
 
-    {#if pessoa.observacoes}
+    {#if autenticado && pessoa.observacoes}
       <p class="person-details__notes"><strong>Observações:</strong> {pessoa.observacoes}</p>
     {/if}
   </div>

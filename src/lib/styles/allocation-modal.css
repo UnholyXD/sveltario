@@ -13,4 +13,8 @@
 .allocation-table { min-width: 48rem; }
 .allocation-message { margin: var(--space-5) 0 0; color: var(--color-text-muted); }
 .allocation-actions { justify-content: flex-end; }
+.allocation-selected-list { margin-top: var(--space-5); }
+.allocation-selected-list h3 { margin: 0 0 var(--space-3); }
+.allocation-selected-item { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); padding: var(--space-3) 0; border-bottom: var(--border-width) solid var(--color-border); }
+.allocation-selected-item:last-child { border-bottom: 0; }
 @media (max-width: 600px) { .allocation-search-row { align-items: stretch; flex-direction: column; } .allocation-search-row button { width: 100%; } }

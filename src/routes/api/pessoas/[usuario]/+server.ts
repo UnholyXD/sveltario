@@ -5,9 +5,10 @@ import { listEquipmentByType } from '$lib/server/storage/equipamentos';
 import { getPessoaByUsuario, listPessoas, savePessoa } from '$lib/server/storage/pessoas';
 import { assertPessoaPayload } from '$lib/server/validation/pessoas';
 
-export async function GET({ params }: { params: Record<string, string> }) {
+export async function GET({ params, cookies }: { params: Record<string, string>; cookies: any }) {
   const { usuario } = params;
   const pessoa = await getPessoaByUsuario(usuario);
+  const autenticado = Boolean(getSessionFromRequest(cookies));
 
   if (!pessoa) {
     return json({ error: 'Pessoa não encontrada.' }, { status: 404 });
@@ -34,10 +35,16 @@ export async function GET({ params }: { params: Record<string, string> }) {
     }
   }
 
-  return json({
-    ...pessoa,
-    equipamentos
-  });
+  if (!autenticado) {
+    return json({
+      nome: pessoa.nome,
+      usuario: pessoa.usuario,
+      setor: pessoa.setor,
+      equipamentos
+    });
+  }
+
+  return json({ ...pessoa, equipamentos });
 }
 
 export async function PATCH({ params, request, cookies }: { params: Record<string, string>; request: Request; cookies: any }) {

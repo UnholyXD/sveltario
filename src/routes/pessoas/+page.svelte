@@ -20,6 +20,16 @@
     mostrarCadastro = false;
   }
 
+  async function abrirCadastro() {
+    const response = await fetch('/api/auth/session');
+    const session = response.ok ? await response.json() : null;
+    if (!session?.authenticated) {
+      window.location.assign('/login');
+      return;
+    }
+    mostrarCadastro = true;
+  }
+
   onMount(async () => {
     try {
       const response = await fetch('/api/pessoas');
@@ -60,7 +70,7 @@
       <p class="eyebrow">Diretório</p>
       <h1>Pessoas</h1>
     </div>
-    <button class="button--primary" type="button" onclick={() => mostrarCadastro = true}>Adicionar</button>
+    <button class="button--primary" type="button" onclick={abrirCadastro}>Adicionar</button>
   </header>
 
   {#if carregando}

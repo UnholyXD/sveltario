@@ -2,6 +2,22 @@
   import AllocationModal from '$lib/components/AllocationModal.svelte';
   let { active = '/' } = $props<{ active?: string }>();
   let alocando = $state(false);
+  let verificandoSessao = $state(false);
+
+  async function abrirAlocacao() {
+    verificandoSessao = true;
+    try {
+      const response = await fetch('/api/auth/session');
+      const session = response.ok ? await response.json() : null;
+      if (!session?.authenticated) {
+        window.location.assign('/login');
+        return;
+      }
+      alocando = true;
+    } finally {
+      verificandoSessao = false;
+    }
+  }
 
   const links = [
     { label: 'Home', href: '/', icon: 'home' },
@@ -19,7 +35,7 @@
   </a>
 
   <div class="navbar-actions">
-    <button class="navbar-link navbar-allocate" type="button" onclick={() => alocando = true}>
+    <button class="navbar-link navbar-allocate" type="button" onclick={abrirAlocacao} disabled={verificandoSessao}>
       <svg viewBox="0 0 24 24" aria-hidden="true">
         <rect x="3" y="5" width="18" height="15" rx="2" />
         <path d="M8 5V3h8v2M7 10h10M7 14h6" />

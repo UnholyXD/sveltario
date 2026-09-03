@@ -45,6 +45,16 @@
     modalTipo = null;
   }
 
+  async function abrirCadastro(tipo: string) {
+    const response = await fetch('/api/auth/session');
+    const session = response.ok ? await response.json() : null;
+    if (!session?.authenticated) {
+      window.location.assign('/login');
+      return;
+    }
+    modalTipo = tipo;
+  }
+
   onMount(async () => {
     try {
       const response = await fetch('/api/equipamentos');
@@ -85,7 +95,7 @@
         count={countByType(type.value)}
         active={filtro === type.value}
         onSelect={() => filtro = filtro === type.value ? null : type.value}
-        onAdd={() => modalTipo = type.value}
+        onAdd={() => abrirCadastro(type.value)}
       />
     {/each}
   </section>

@@ -7,7 +7,7 @@
     estado: string;
   };
 
-  let { equipamentos }: { equipamentos: Equipment[] } = $props();
+  let { equipamentos, autenticado = false, onAllocate, onDeallocate }: { equipamentos: Equipment[]; autenticado?: boolean; onAllocate?: () => void; onDeallocate?: (equipamento: Equipment) => void } = $props();
 
   const labels: Record<string, string> = {
     computador: 'Computador',
@@ -32,6 +32,7 @@
           <th scope="col">Marca</th>
           <th scope="col">Modelo</th>
           <th scope="col">Estado</th>
+          {#if autenticado}<th scope="col">Ações</th>{/if}
         </tr>
       </thead>
       <tbody>
@@ -42,6 +43,7 @@
             <td>{equipamento.marca || '—'}</td>
             <td>{equipamento.modelo || '—'}</td>
             <td>{equipamento.estado || '—'}</td>
+            {#if autenticado}<td><button class="button--secondary deallocate-button" type="button" onclick={() => onDeallocate?.(equipamento)}>Desalocar</button></td>{/if}
           </tr>
         {/each}
       </tbody>
@@ -49,4 +51,6 @@
   </div>
 {/if}
 
-<button class="button--primary allocated-action" type="button">Alocar</button>
+{#if autenticado}
+  <button class="button--primary allocated-action" type="button" onclick={() => onAllocate?.()}>Alocar</button>
+{/if}
