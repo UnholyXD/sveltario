@@ -49,6 +49,20 @@ export async function createUsuario(usuario: string, senha: string): Promise<Usu
   return novoUsuario;
 }
 
+export async function changeUsuarioPassword(usuario: string, senha: string): Promise<void> {
+  const store = await readUsuarios();
+  const user = store.items.find((item) => item.usuario === usuario);
+
+  if (!user) {
+    throw new Error(`Usuário não encontrado: ${usuario}`);
+  }
+
+  const { salt, hash } = await hashPassword(senha);
+  user.salt = salt;
+  user.senhaHash = hash;
+  await writeUsuarios(store);
+}
+
 export async function autenticateUsuario(usuario: string, senha: string): Promise<{ usuario: string } | null> {
   const user = await getUsuarioByName(usuario);
   if (!user || !user.ativo) {

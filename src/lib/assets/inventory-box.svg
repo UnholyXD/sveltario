@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-labelledby="title desc">
+  <title id="title">Símbolo de inventário</title>
+  <desc id="desc">Caixa de inventário aberta com cartões organizados</desc>
+  <defs>
+    <linearGradient id="box" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#324154"/>
+      <stop offset="1" stop-color="#1e2b3a"/>
+    </linearGradient>
+  </defs>
+  <rect x="42" y="23" width="90" height="46" rx="12" fill="#18c6df"/>
+  <rect x="28" y="38" width="98" height="48" rx="12" fill="#1688db"/>
+  <rect x="15" y="54" width="130" height="85" rx="28" fill="url(#box)" stroke="#52657a" stroke-width="4"/>
+  <path d="M17 70h126" stroke="#73879b" stroke-width="6" stroke-linecap="round"/>
+  <rect x="38" y="48" width="84" height="45" rx="9" fill="#f4f7fb"/>
+  <path d="M54 70h52M54 82h35" stroke="#a9b5c2" stroke-width="6" stroke-linecap="round"/>
+  <path d="M48 117c8-13 18-16 29-8l10-11 12 12" fill="none" stroke="#17c5d8" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M55 108h43" stroke="#f4f7fb" stroke-width="8" stroke-linecap="round"/>
+</svg>

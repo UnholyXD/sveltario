@@ -40,3 +40,5 @@ npm run check    # verifica tipos e arquivos Svelte
 npm run build    # gera a versão de produção
 npm run preview  # visualiza a build de produção localmente
 ```
+
+Para alterar a senha de um usuário localmente, execute `npm run user:change_password` e informe o usuário, a nova senha e a confirmação.
