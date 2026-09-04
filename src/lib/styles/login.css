@@ -64,7 +64,7 @@
 .login-form input {
   min-height: 2.75rem;
   background: var(--login-surface);
-  border-color: #425166;
+  border-color: var(--color-border);
   color: var(--login-text);
 }
 
@@ -79,7 +79,7 @@
 
 .login-error {
   margin: 0;
-  color: #ffb4ab;
+  color: var(--color-danger);
   font-size: var(--font-size-sm);
 }
 

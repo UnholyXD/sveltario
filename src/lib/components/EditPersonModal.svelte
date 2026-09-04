@@ -12,8 +12,9 @@
     observacoes?: string | null;
   };
 
-  let { pessoa, onClose, onSaved }: {
+  let { pessoa, hasAllocatedEquipment = false, onClose, onSaved }: {
     pessoa: Person;
+    hasAllocatedEquipment?: boolean;
     onClose: () => void;
     onSaved: (pessoa: Person) => void;
   } = $props();
@@ -30,6 +31,7 @@
   });
   let erro = $state('');
   let salvando = $state(false);
+  let confirmarDesativacao = $state(false);
 
   $effect(() => {
     form = {
@@ -56,12 +58,18 @@
     return '';
   }
 
-  async function salvar() {
+  async function salvar(confirmado = false) {
     erro = validar();
     if (erro) {
       return;
     }
 
+    if (pessoa.ativo !== false && !form.ativo && hasAllocatedEquipment && !confirmado) {
+      confirmarDesativacao = true;
+      return;
+    }
+
+    confirmarDesativacao = false;
     salvando = true;
     try {
       const response = await fetch(`/api/pessoas/${encodeURIComponent(pessoa.usuario)}`, {
@@ -164,5 +172,16 @@
         <button class="button--primary" type="submit" disabled={salvando}>{salvando ? 'Salvando...' : 'Salvar'}</button>
       </footer>
     </form>
+
+    {#if confirmarDesativacao}
+      <div class="edit-person-confirmation" role="alertdialog" aria-modal="true" aria-labelledby="deactivate-title">
+        <h3 id="deactivate-title">Desativar colaborador?</h3>
+        <p>Este colaborador possui equipamentos alocados. Ao marcá-lo como inativo, todos serão desalocados automaticamente.</p>
+        <footer class="form-actions">
+          <button class="button--secondary" type="button" onclick={() => confirmarDesativacao = false} disabled={salvando}>Cancelar</button>
+          <button class="button--primary" type="button" onclick={() => salvar(true)} disabled={salvando}>Desativar e desalocar</button>
+        </footer>
+      </div>
+    {/if}
   </div>
 </div>

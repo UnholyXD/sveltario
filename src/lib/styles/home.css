@@ -64,14 +64,14 @@
 }
 
 .home-tile--equipment {
-  background: #fff7eb;
-  border-color: #f1c98c;
-  color: #d98512;
+  background: #302b25;
+  border-color: #8c6740;
+  color: #f0b66a;
 }
 
 .home-tile--people {
-  background: #edf6ff;
-  border-color: #a9d0f3;
+  background: #1d3440;
+  border-color: #39758a;
   color: var(--color-primary);
 }
 

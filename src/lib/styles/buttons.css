@@ -23,7 +23,7 @@ button:focus-visible,
 .button--primary,
 button[type='submit'] {
   background: var(--color-primary);
-  color: var(--color-surface);
+  color: var(--color-on-primary);
 }
 
 .button--primary:hover,
@@ -39,7 +39,7 @@ button[type='submit']:hover {
 
 .button--secondary:hover {
   border-color: var(--color-primary);
-  color: var(--color-primary-strong);
+  color: var(--color-primary);
 }
 
 .button--danger {

@@ -101,9 +101,13 @@
 {#if editando && pessoa && autenticado}
   <EditPersonModal
     {pessoa}
+    hasAllocatedEquipment={equipamentos.length > 0}
     onClose={() => editando = false}
     onSaved={(atualizada) => {
       pessoa = atualizada;
+      if (atualizada.ativo === false) {
+        equipamentos = [];
+      }
       editando = false;
     }}
   />

@@ -54,7 +54,7 @@ main {
   display: grid;
   place-items: center;
   padding: var(--space-4);
-  background: rgba(12, 16, 24, 0.45);
+  background: rgba(3, 8, 14, 0.72);
 }
 
 .modal__content {

@@ -16,7 +16,7 @@
   height: 9rem;
   margin: auto;
   border-radius: 50%;
-  background: #edf6ff;
+  background: #1d3440;
   color: var(--color-primary);
 }
 
@@ -115,7 +115,7 @@
   padding: var(--space-2) var(--space-3);
   border-radius: var(--radius-sm);
   background: var(--color-text);
-  color: var(--color-surface);
+  color: var(--color-background);
   font-size: var(--font-size-sm);
   opacity: 0;
   pointer-events: none;

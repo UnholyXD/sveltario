@@ -1,8 +1,8 @@
 import { json } from '@sveltejs/kit';
 import { getSessionFromRequest } from '$lib/server/auth/session';
-import { getAlocacaoPorUsuario } from '$lib/server/storage/alocacoes';
+import { getAlocacaoPorUsuario, readAlocacoes, writeAlocacoes } from '$lib/server/storage/alocacoes';
 import { listEquipmentByType } from '$lib/server/storage/equipamentos';
-import { getPessoaByUsuario, listPessoas, savePessoa } from '$lib/server/storage/pessoas';
+import { getPessoaByUsuario, readPessoas, writePessoas } from '$lib/server/storage/pessoas';
 import { assertPessoaPayload } from '$lib/server/validation/pessoas';
 
 export async function GET({ params, cookies }: { params: Record<string, string>; cookies: any }) {
@@ -72,11 +72,6 @@ export async function PATCH({ params, request, cookies }: { params: Record<strin
       return json({ error: 'O ID da empresa não pode ser alterado.' }, { status: 400 });
     }
 
-    const alocacao = await getAlocacaoPorUsuario(usuario);
-    if (body.ativo === false && alocacao && alocacao.equipamentos.length > 0) {
-      return json({ error: 'Não é possível desativar pessoa com equipamentos alocados.' }, { status: 409 });
-    }
-
     const atualizada = {
       nome: typeof body.nome === 'string' ? body.nome.trim() : pessoa.nome,
       usuario: pessoa.usuario,
@@ -90,7 +85,34 @@ export async function PATCH({ params, request, cookies }: { params: Record<strin
       observacoes: typeof body.observacoes === 'string' ? body.observacoes : pessoa.observacoes
     };
 
-    await savePessoa(atualizada);
+    const desativando = pessoa.ativo && atualizada.ativo === false;
+    const pessoasStore = await readPessoas();
+    const alocacoesStore = desativando ? await readAlocacoes() : null;
+    const alocacaoAnterior = alocacoesStore?.items.find((entry) => entry.usuario === usuario);
+
+    if (desativando && alocacoesStore && alocacaoAnterior) {
+      const alocacaoSemEquipamentos = {
+        ...alocacaoAnterior,
+        equipamentos: []
+      };
+      const alocacaoIndex = alocacoesStore.items.indexOf(alocacaoAnterior);
+      alocacoesStore.items[alocacaoIndex] = alocacaoSemEquipamentos;
+      await writeAlocacoes(alocacoesStore);
+    }
+
+    const pessoaIndex = pessoasStore.items.findIndex((entry) => entry.usuario === usuario);
+    pessoasStore.items[pessoaIndex] = atualizada;
+
+    try {
+      await writePessoas(pessoasStore);
+    } catch (error) {
+      if (desativando && alocacoesStore && alocacaoAnterior) {
+        alocacoesStore.items[alocacoesStore.items.findIndex((entry) => entry.usuario === usuario)] = alocacaoAnterior;
+        await writeAlocacoes(alocacoesStore);
+      }
+      throw error;
+    }
+
     return json(atualizada);
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Erro ao atualizar pessoa.';
