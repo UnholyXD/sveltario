@@ -2,6 +2,30 @@
   min-height: calc(100vh - 4.5rem);
 }
 
+.people-controls {
+  display: flex;
+  align-items: end;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+}
+
+.people-controls label {
+  display: grid;
+  flex: 1;
+  gap: var(--space-2);
+  margin: 0;
+}
+
+.people-controls .people-sort {
+  flex: 0 1 14rem;
+}
+
+.people-controls span {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+}
+
 .eyebrow {
   margin: 0 0 var(--space-2);
   color: var(--color-primary);
@@ -23,4 +47,15 @@
 
 .state-message p {
   margin: 0;
+}
+
+@media (max-width: 600px) {
+  .people-controls {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .people-controls .people-sort {
+    flex-basis: auto;
+  }
 }
