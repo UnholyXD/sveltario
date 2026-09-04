@@ -1,8 +1,8 @@
 <script lang="ts">
-  let { nome, usuario, setor }: { nome: string; usuario: string; setor?: string | null } = $props();
+  let { nome, usuario, setor, ativo = true }: { nome: string; usuario: string; setor?: string | null; ativo?: boolean } = $props();
 </script>
 
-<a class="person-card" href={`/pessoas/${encodeURIComponent(usuario)}`}>
+<a class:person-card--inactive={!ativo} class="person-card" href={`/pessoas/${encodeURIComponent(usuario)}`}>
   <span class="person-avatar" aria-hidden="true">
     <svg viewBox="0 0 96 96">
       <circle cx="48" cy="30" r="15" />
@@ -13,5 +13,8 @@
   <span class="person-card__user">{usuario}</span>
   {#if setor}
     <span class="person-card__department">{setor}</span>
+  {/if}
+  {#if !ativo}
+    <span class="person-card__status">Inativo</span>
   {/if}
 </a>

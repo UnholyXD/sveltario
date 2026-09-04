@@ -8,7 +8,7 @@
     alocadoPara?: { nome: string; usuario: string } | null;
   };
 
-  let { equipamentos }: { equipamentos: EquipmentRow[] } = $props();
+  let { equipamentos, onSelect }: { equipamentos: EquipmentRow[]; onSelect?: (item: EquipmentRow) => void } = $props();
 
   const labels: Record<string, string> = {
     computador: 'Computador',
@@ -43,7 +43,7 @@
     </thead>
     <tbody>
       {#each equipamentos as equipamento}
-        <tr>
+        <tr class:clickable={Boolean(onSelect)} onclick={() => onSelect?.(equipamento)} onkeydown={(event) => event.key === 'Enter' && onSelect?.(equipamento)} role={onSelect ? 'button' : undefined} tabindex={onSelect ? 0 : undefined}>
           <td>{labels[equipamento.tipo] ?? equipamento.tipo}</td>
           <td>{equipamento.id || '—'}</td>
           <td>{equipamento.marca || '—'}</td>

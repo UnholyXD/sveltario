@@ -8,6 +8,7 @@
     nome: string;
     usuario: string;
     setor?: string | null;
+    ativo?: boolean;
   };
 
   let pessoas = $state<Person[]>([]);
@@ -16,15 +17,20 @@
   let mostrarCadastro = $state(false);
   let busca = $state('');
   let ordenacao = $state<'alfabetica' | 'usuario'>('alfabetica');
+  let filtroEstado = $state<'ativos' | 'inativos' | 'todos'>('ativos');
 
   const pessoasVisiveis = $derived.by(() => {
     const termo = busca.trim().toLocaleLowerCase('pt-BR');
+    const porEstado = pessoas.filter((pessoa) =>
+      filtroEstado === 'todos' ||
+      (filtroEstado === 'ativos' ? pessoa.ativo === true : pessoa.ativo === false)
+    );
     const filtradas = termo
-      ? pessoas.filter((pessoa) =>
+      ? porEstado.filter((pessoa) =>
           pessoa.nome.toLocaleLowerCase('pt-BR').includes(termo) ||
           pessoa.usuario.toLocaleLowerCase('pt-BR').includes(termo)
         )
-      : [...pessoas];
+      : [...porEstado];
 
     return filtradas.sort((a, b) => {
       if (ordenacao === 'alfabetica') {
@@ -40,6 +46,16 @@
   function adicionarPessoa(pessoa: Person) {
     pessoas = [pessoa, ...pessoas];
     mostrarCadastro = false;
+  }
+
+  function mensagemVazia(): string {
+    if (filtroEstado === 'ativos') {
+      return busca ? 'Nenhum colaborador encontrado.' : 'Nenhum colaborador ativo cadastrado.';
+    }
+    if (filtroEstado === 'inativos') {
+      return busca ? 'Nenhum colaborador encontrado.' : 'Nenhum colaborador inativo.';
+    }
+    return busca ? 'Nenhum colaborador encontrado.' : 'Nenhum colaborador cadastrado.';
   }
 
   async function abrirCadastro() {
@@ -103,10 +119,6 @@
     <section class="state-message card panel" role="alert">
       <p>Não foi possível carregar os colaboradores. Tente novamente.</p>
     </section>
-  {:else if pessoas.length === 0}
-    <section class="state-message card panel">
-      <p>Nenhum colaborador cadastrado.</p>
-    </section>
   {:else}
     <div class="people-controls" role="search">
       <label class="people-search">
@@ -120,16 +132,24 @@
           <option value="usuario">ID DinaBox</option>
         </select>
       </label>
+      <div class="people-status-filter" role="group" aria-label="Filtrar por estado">
+        <span>Estado</span>
+        <div class="people-status-options">
+          <button class:active={filtroEstado === 'ativos'} type="button" onclick={() => filtroEstado = 'ativos'}>Ativos</button>
+          <button class:active={filtroEstado === 'inativos'} type="button" onclick={() => filtroEstado = 'inativos'}>Inativos</button>
+          <button class:active={filtroEstado === 'todos'} type="button" onclick={() => filtroEstado = 'todos'}>Todos</button>
+        </div>
+      </div>
     </div>
 
     {#if pessoasVisiveis.length === 0}
       <section class="state-message card panel">
-        <p>Nenhum colaborador encontrado.</p>
+        <p>{mensagemVazia()}</p>
       </section>
     {:else}
       <section class="people-grid" aria-label="Colaboradores cadastrados">
         {#each pessoasVisiveis as pessoa (pessoa.usuario)}
-          <PersonCard nome={pessoa.nome} usuario={pessoa.usuario} setor={pessoa.setor} />
+          <PersonCard nome={pessoa.nome} usuario={pessoa.usuario} setor={pessoa.setor} ativo={pessoa.ativo === true} />
         {/each}
       </section>
     {/if}

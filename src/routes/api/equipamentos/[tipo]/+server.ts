@@ -1,6 +1,6 @@
 import { json } from '@sveltejs/kit';
 import { getSessionFromRequest } from '$lib/server/auth/session';
-import { findEquipmentOwner } from '$lib/server/storage/alocacoes';
+import { findEquipmentOwner, replaceEquipmentIdentifier } from '$lib/server/storage/alocacoes';
 import { nextGenericId } from '$lib/server/storage/contadores';
 import { listEquipmentByType, saveEquipmentByType } from '$lib/server/storage/equipamentos';
 import { getPessoaByUsuario } from '$lib/server/storage/pessoas';
@@ -137,6 +137,7 @@ export async function POST({ params, request, cookies }: { params: Record<string
       assertUniqueIdentifier(items as Array<Record<string, unknown>>, 'patrimonio', normalizedRecord.patrimonio, 'Equipamento');
     }
 
+
     if (tipo === 'mouse' || tipo === 'teclado' || tipo === 'fone' || tipo === 'outros') {
       const id = await nextGenericId(tipo);
       const item = { ...normalized, id };
@@ -150,6 +151,39 @@ export async function POST({ params, request, cookies }: { params: Record<string
     return json(normalized, { status: 201 });
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Erro ao cadastrar equipamento.';
-    return json({ error: message }, { status: 400 });
+    return json({ error: message }, { status: message.toLowerCase().includes('duplicado') ? 409 : 400 });
+  }
+}
+export async function PATCH({ params, request, cookies }: { params: Record<string, string>; request: Request; cookies: any }) {
+  const { tipo } = params;
+  if (!getSessionFromRequest(cookies)) return json({ error: 'Não autenticado.' }, { status: 401 });
+  try {
+    assertValidEquipmentType(tipo);
+    const payload = await request.json() as Record<string, unknown>;
+    const key = tipo === 'computador' || tipo === 'monitor' ? 'patrimonio' : 'id';
+    const oldId = String(payload.identificadorOriginal ?? payload[key] ?? '');
+    const items = await listEquipmentByType(tipo) as Array<Record<string, unknown>>;
+    const previousItems = structuredClone(items);
+    const index = items.findIndex((item) => String(item[key] ?? '') === oldId);
+    if (!oldId || index < 0) return json({ error: 'Equipamento não encontrado.' }, { status: 404 });
+    const { identificadorOriginal: _identificadorOriginal, ...equipmentPayload } = payload;
+    const normalized = normalizePayload(tipo, equipmentPayload) as Record<string, unknown>;
+    const nextId = String(normalized[key] ?? '');
+    if ((tipo === 'computador' || tipo === 'monitor') && items.some((item, itemIndex) => itemIndex !== index && String(item[key] ?? '') === nextId)) {
+      return json({ error: 'Patrimônio já cadastrado. Informe um patrimônio diferente.' }, { status: 409 });
+    }
+    if (tipo !== 'computador' && tipo !== 'monitor') normalized[key] = oldId;
+    items[index] = { ...items[index], ...normalized, [key]: tipo === 'computador' || tipo === 'monitor' ? nextId : oldId };
+    await saveEquipmentByType(tipo, items);
+    try {
+      if (tipo === 'computador' || tipo === 'monitor') await replaceEquipmentIdentifier(tipo, oldId, nextId);
+    } catch (allocationError) {
+      // Keep both JSON stores consistent if the reference update cannot be committed.
+      await saveEquipmentByType(tipo, previousItems);
+      throw allocationError;
+    }
+    return json(items[index]);
+  } catch (error) {
+    return json({ error: error instanceof Error ? error.message : 'Erro ao atualizar equipamento.' }, { status: 400 });
   }
 }

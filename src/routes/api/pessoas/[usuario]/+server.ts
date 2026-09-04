@@ -8,8 +8,6 @@ import { assertPessoaPayload } from '$lib/server/validation/pessoas';
 export async function GET({ params, cookies }: { params: Record<string, string>; cookies: any }) {
   const { usuario } = params;
   const pessoa = await getPessoaByUsuario(usuario);
-  const autenticado = Boolean(getSessionFromRequest(cookies));
-
   if (!pessoa) {
     return json({ error: 'Pessoa não encontrada.' }, { status: 404 });
   }
@@ -33,15 +31,6 @@ export async function GET({ params, cookies }: { params: Record<string, string>;
         });
       }
     }
-  }
-
-  if (!autenticado) {
-    return json({
-      nome: pessoa.nome,
-      usuario: pessoa.usuario,
-      setor: pessoa.setor,
-      equipamentos
-    });
   }
 
   return json({ ...pessoa, equipamentos });

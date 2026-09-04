@@ -26,6 +26,15 @@
   box-shadow: var(--focus-ring), 0 14px 26px var(--color-shadow);
 }
 
+.person-card--inactive {
+  opacity: 0.72;
+}
+
+.person-card--inactive:hover,
+.person-card--inactive:focus-visible {
+  opacity: 0.9;
+}
+
 .person-avatar {
   display: grid;
   place-items: center;
@@ -56,4 +65,13 @@
 .person-card__department {
   color: var(--color-text-muted);
   font-size: var(--font-size-sm);
+}
+
+.person-card__status {
+  padding: var(--space-1) var(--space-2);
+  border: var(--border-width) solid var(--color-danger);
+  border-radius: 999px;
+  color: var(--color-danger);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
 }

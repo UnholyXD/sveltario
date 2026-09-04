@@ -102,6 +102,7 @@ export async function transferEquipment(tipo: EquipmentType, id: string, usuario
     store.items.push(destino);
   }
 
+
   destino.equipamentos.push({ tipo, id });
   await writeAlocacoes(store);
 
@@ -109,4 +110,14 @@ export async function transferEquipment(tipo: EquipmentType, id: string, usuario
     usuarioOrigem: origem.usuario,
     usuarioDestino: destino.usuario
   };
+}
+
+/** Rewrites all references in one allocation-file transaction. */
+export async function replaceEquipmentIdentifier(tipo: EquipmentType, oldId: string, newId: string): Promise<void> {
+  if (oldId === newId) return;
+  const store = await readAlocacoes();
+  for (const entry of store.items) {
+    entry.equipamentos = entry.equipamentos.map((item) => item.tipo === tipo && item.id === oldId ? { ...item, id: newId } : item);
+  }
+  await writeAlocacoes(store);
 }

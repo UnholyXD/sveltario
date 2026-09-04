@@ -24,6 +24,7 @@
   let erro = $state(false);
   let filtro = $state<string | null>(null);
   let modalTipo = $state<string | null>(null);
+  let equipamentoEditando = $state<EquipmentRow | null>(null);
 
   const visiveis = $derived(filtro ? equipamentos.filter((item) => item.tipo === filtro) : equipamentos);
 
@@ -43,6 +44,15 @@
     const id = typeof item[identifierKey] === 'string' ? item[identifierKey] : String(item[identifierKey] ?? '');
     equipamentos = [...equipamentos, { ...item, tipo: modalTipo, id } as EquipmentRow];
     modalTipo = null;
+  }
+
+  function atualizarEquipamento(item: Record<string, unknown>) {
+    const tipo = equipamentoEditando?.tipo;
+    if (!tipo) return;
+    const key = tipo === 'computador' || tipo === 'monitor' ? 'patrimonio' : 'id';
+    const id = String(item[key] ?? '');
+    equipamentos = equipamentos.map((current) => current === equipamentoEditando ? { ...item, tipo, id } as EquipmentRow : current);
+    equipamentoEditando = null;
   }
 
   async function abrirCadastro(tipo: string) {
@@ -117,7 +127,23 @@
       <p>Nenhum equipamento encontrado para este tipo.</p>
     </section>
   {:else}
-    <EquipmentTable equipamentos={visiveis} />
+    <EquipmentTable equipamentos={visiveis} onSelect={(item) => { equipamentoEditando = item; modalTipo = null; }} />
+  {/if}
+
+  {#if equipamentoEditando}
+    {#if equipamentoEditando.tipo === 'computador'}
+      <ComputerCreateModal mode="edit" equipment={equipamentoEditando} onClose={() => equipamentoEditando = null} onSaved={atualizarEquipamento} />
+    {:else if equipamentoEditando.tipo === 'monitor'}
+      <MonitorCreateModal mode="edit" equipment={equipamentoEditando} onClose={() => equipamentoEditando = null} onSaved={atualizarEquipamento} />
+    {:else if equipamentoEditando.tipo === 'fone'}
+      <HeadsetCreateModal mode="edit" equipment={equipamentoEditando} onClose={() => equipamentoEditando = null} onSaved={atualizarEquipamento} />
+    {:else if equipamentoEditando.tipo === 'mouse'}
+      <MouseCreateModal mode="edit" equipment={equipamentoEditando} onClose={() => equipamentoEditando = null} onSaved={atualizarEquipamento} />
+    {:else if equipamentoEditando.tipo === 'teclado'}
+      <KeyboardCreateModal mode="edit" equipment={equipamentoEditando} onClose={() => equipamentoEditando = null} onSaved={atualizarEquipamento} />
+    {:else if equipamentoEditando.tipo === 'outros'}
+      <OtherCreateModal mode="edit" equipment={equipamentoEditando} onClose={() => equipamentoEditando = null} onSaved={atualizarEquipamento} />
+    {/if}
   {/if}
 </main>
 
