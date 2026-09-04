@@ -24,3 +24,5 @@ config/usuarios.json
 # Vite
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+config/contadores.json
+sveltario/data
