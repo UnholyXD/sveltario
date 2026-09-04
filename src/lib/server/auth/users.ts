@@ -17,7 +17,24 @@ export interface UsuariosStore {
 const usuariosPath = path.join(configDirectory, 'usuarios.json');
 
 export async function readUsuarios(): Promise<UsuariosStore> {
-  return readJsonFile<UsuariosStore>(usuariosPath, { requireCollection: true });
+  const store = await readJsonFile<UsuariosStore>(usuariosPath, { requireCollection: true });
+
+  if (store.items.length === 0) {
+    const { salt, hash } = await hashPassword('admin');
+    const initialStore: UsuariosStore = {
+      version: 1,
+      items: [{
+        usuario: 'admin',
+        salt,
+        senhaHash: hash,
+        ativo: true
+      }]
+    };
+    await writeJsonFile(usuariosPath, initialStore);
+    return initialStore;
+  }
+
+  return store;
 }
 
 export async function writeUsuarios(store: UsuariosStore): Promise<void> {

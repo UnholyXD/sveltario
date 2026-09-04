@@ -25,4 +25,6 @@ config/usuarios.json
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 config/contadores.json
-sveltario/data
+
+# Local application data
+data/
