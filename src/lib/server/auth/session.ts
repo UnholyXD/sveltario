@@ -50,6 +50,13 @@ export function destroySession(cookies: Cookies): void {
   cookies.delete(SESSION_COOKIE_NAME, { path: '/' });
 }
 
+/** Invalidate every active session belonging to a user. */
+export function destroySessionsForUser(usuario: string): void {
+  for (const [token, session] of sessions) {
+    if (session.usuario === usuario) sessions.delete(token);
+  }
+}
+
 export function getSessionFromCookieValue(cookieValue: string | undefined): { usuario: string } | null {
   if (!cookieValue) {
     return null;

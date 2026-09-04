@@ -68,6 +68,16 @@ button.navbar-link {
   color: var(--color-primary-strong);
 }
 
+.navbar-user {
+  color: var(--color-text);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.navbar-logout {
+  color: var(--color-danger, #b42318);
+}
+
 @media (max-width: 600px) {
   .navbar-shell {
     width: min(100% - var(--space-6), var(--container-width));

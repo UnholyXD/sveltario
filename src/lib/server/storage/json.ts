@@ -73,6 +73,30 @@ export async function writeJsonFile(filePath: string, payload: unknown): Promise
       await fs.unlink(tempPath).catch(() => undefined);
       throw error;
     }
+
+  });
+}
+
+/** Updates a JSON file while holding the same per-file lock used by writes. */
+export async function updateJsonFile<T>(
+  filePath: string,
+  update: (current: T) => T | Promise<T>,
+  defaultContent = '{}\n'
+): Promise<T> {
+  await ensureFileExists(filePath, defaultContent);
+
+  return withFileLock(filePath, async () => {
+    const current = JSON.parse(await fs.readFile(filePath, 'utf8')) as T;
+    const next = await update(current);
+    const tempPath = `${filePath}.tmp`;
+    await fs.writeFile(tempPath, `${JSON.stringify(next, null, 2)}\n`, 'utf8');
+    try {
+      await fs.rename(tempPath, filePath);
+    } catch (error) {
+      await fs.unlink(tempPath).catch(() => undefined);
+      throw error;
+    }
+    return next;
   });
 }
 

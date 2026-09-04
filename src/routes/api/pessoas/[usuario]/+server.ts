@@ -4,6 +4,8 @@ import { getAlocacaoPorUsuario, readAlocacoes, writeAlocacoes } from '$lib/serve
 import { listEquipmentByType } from '$lib/server/storage/equipamentos';
 import { getPessoaByUsuario, readPessoas, writePessoas } from '$lib/server/storage/pessoas';
 import { assertPessoaPayload } from '$lib/server/validation/pessoas';
+import { appendMovimentacao } from '$lib/server/storage/movimentacoes';
+import { getEquipmentByTypeAndId } from '$lib/server/storage/equipamentos';
 
 export async function GET({ params, cookies }: { params: Record<string, string>; cookies: any }) {
   const { usuario } = params;
@@ -100,6 +102,25 @@ export async function PATCH({ params, request, cookies }: { params: Record<strin
         await writeAlocacoes(alocacoesStore);
       }
       throw error;
+    }
+
+    if (desativando && alocacaoAnterior) {
+      for (const item of alocacaoAnterior.equipamentos) {
+        const equipment = await getEquipmentByTypeAndId(item.tipo, item.id);
+        const entry = (equipment ?? {}) as Record<string, unknown>;
+        await appendMovimentacao({
+        acao: 'desalocacao',
+          executadoPor: session.usuario,
+          equipamento: {
+            tipo: item.tipo,
+            id: item.id,
+            marca: typeof entry.marca === 'string' ? entry.marca : '',
+            modelo: typeof entry.modelo === 'string' ? entry.modelo : ''
+          },
+          origem: { usuario: pessoa.usuario, nome: pessoa.nome },
+          destino: null
+        });
+      }
     }
 
     return json(atualizada);

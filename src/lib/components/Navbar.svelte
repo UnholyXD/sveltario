@@ -1,8 +1,22 @@
 <script lang="ts">
   import AllocationModal from '$lib/components/AllocationModal.svelte';
+  import { onMount } from 'svelte';
   let { active = '/' } = $props<{ active?: string }>();
   let alocando = $state(false);
   let verificandoSessao = $state(false);
+  let usuarioAtual = $state<string | null>(null);
+  let saindo = $state(false);
+
+  onMount(async () => {
+    const response = await fetch('/api/auth/session');
+    if (response.ok) usuarioAtual = (await response.json()).usuario ?? null;
+  });
+
+  async function sair() {
+    saindo = true;
+    await fetch('/api/auth/logout', { method: 'POST' });
+    window.location.assign('/login');
+  }
 
   async function abrirAlocacao() {
     verificandoSessao = true;
@@ -61,6 +75,13 @@
         <span>{link.label}</span>
       </a>
     {/each}
+    <a class:active={active === '/admin/usuarios'} class="navbar-link" href="/admin/usuarios">
+      <span>Admin</span>
+    </a>
+    {#if usuarioAtual}
+      <span class="navbar-user" title="Usuário atual">{usuarioAtual}</span>
+      <button class="navbar-link navbar-logout" type="button" onclick={sair} disabled={saindo}>Sair</button>
+    {/if}
   </div>
 </nav>
 

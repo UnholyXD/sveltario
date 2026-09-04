@@ -9,7 +9,8 @@ export type DataKind =
   | 'fone'
   | 'outros'
   | 'pessoas'
-  | 'alocacoes';
+  | 'alocacoes'
+  | 'movimentacoes';
 
 export const DATA_FILES: Record<DataKind, string> = {
   computador: 'computador.json',
@@ -19,5 +20,6 @@ export const DATA_FILES: Record<DataKind, string> = {
   fone: 'fone.json',
   outros: 'outros.json',
   pessoas: 'pessoas.json',
-  alocacoes: 'alocacoes.json'
+  alocacoes: 'alocacoes.json',
+  movimentacoes: 'movimentacoes.json'
 };

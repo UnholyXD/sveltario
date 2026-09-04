@@ -4,6 +4,7 @@ import { findEquipmentOwner, getAlocacaoPorUsuario, readAlocacoes, writeAlocacoe
 import { getEquipmentByTypeAndId } from '$lib/server/storage/equipamentos';
 import { getPessoaByUsuario } from '$lib/server/storage/pessoas';
 import { assertAlocacaoPayload } from '$lib/server/validation/alocacoes';
+import { appendMovimentacao } from '$lib/server/storage/movimentacoes';
 
 export async function GET() {
   const store = await readAlocacoes();
@@ -33,6 +34,7 @@ export async function POST({ request, cookies }: { request: Request; cookies: an
     const alocacoes = await readAlocacoes();
     const atual = alocacoes.items.find((entry) => entry.usuario === body.usuario);
     const indisponiveis: string[] = [];
+    const snapshots = new Map<string, { tipo: typeof equipamentos[number]['tipo']; id: string; marca: string; modelo: string }>();
 
     for (const equipamento of equipamentos) {
       const item = await getEquipmentByTypeAndId(equipamento.tipo, equipamento.id);
@@ -40,6 +42,14 @@ export async function POST({ request, cookies }: { request: Request; cookies: an
       const jaNaPessoa = atual?.equipamentos.some((entry) => entry.tipo === equipamento.tipo && entry.id === equipamento.id);
       if (!item || owner || jaNaPessoa) {
         indisponiveis.push(`${equipamento.tipo}:${equipamento.id}`);
+      } else {
+        const entry = item as Record<string, unknown>;
+        snapshots.set(`${equipamento.tipo}:${equipamento.id}`, {
+          tipo: equipamento.tipo,
+          id: equipamento.id,
+          marca: typeof entry.marca === 'string' ? entry.marca : '',
+          modelo: typeof entry.modelo === 'string' ? entry.modelo : ''
+        });
       }
     }
 
@@ -51,6 +61,15 @@ export async function POST({ request, cookies }: { request: Request; cookies: an
     if (!atual) alocacoes.items.push(destino);
     destino.equipamentos.push(...equipamentos);
     await writeAlocacoes(alocacoes);
+    for (const equipamento of equipamentos) {
+      await appendMovimentacao({
+        acao: 'alocacao',
+        executadoPor: session.usuario,
+        equipamento: snapshots.get(`${equipamento.tipo}:${equipamento.id}`)!,
+        origem: null,
+        destino: { usuario: pessoa.usuario, nome: pessoa.nome }
+      });
+    }
     return json({ usuario: body.usuario, equipamentos }, { status: 201 });
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Erro ao alocar equipamento.';

@@ -1,5 +1,5 @@
 import path from 'node:path';
-import { configDirectory, readJsonFile, writeJsonFile } from './json';
+import { configDirectory, readJsonFile, updateJsonFile, writeJsonFile } from './json';
 
 export type CounterRecord = {
   version: number;
@@ -7,6 +7,7 @@ export type CounterRecord = {
   teclado: number;
   fone: number;
   outros: number;
+  movimentacoes: number;
 };
 
 const counterPath = path.join(configDirectory, 'contadores.json');
@@ -24,8 +25,22 @@ export async function readCounters(): Promise<CounterRecord> {
     mouse: Number(counter.mouse ?? 0),
     teclado: Number(counter.teclado ?? 0),
     fone: Number(counter.fone ?? 0),
-    outros: Number(counter.outros ?? 0)
+    outros: Number(counter.outros ?? 0),
+    movimentacoes: Number(counter.movimentacoes ?? 0)
   };
+}
+
+export async function nextMovimentacaoId(): Promise<number> {
+  const counters = await updateJsonFile<CounterRecord>(
+    counterPath,
+    (current) => ({
+      ...current,
+      version: 1,
+      movimentacoes: Number(current.movimentacoes ?? 0) + 1
+    }),
+    JSON.stringify({ version: 1, mouse: 0, teclado: 0, fone: 0, outros: 0, movimentacoes: 0 }, null, 2) + '\n'
+  );
+  return counters.movimentacoes;
 }
 
 export async function nextGenericId(tipo: 'mouse' | 'teclado' | 'fone' | 'outros'): Promise<string> {

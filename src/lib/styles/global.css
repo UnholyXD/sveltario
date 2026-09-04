@@ -14,6 +14,7 @@
 @import './edit-person-modal.css';
 @import './equipment.css';
 @import './allocation-modal.css';
+@import './admin-users.css';
 
 * {
   box-sizing: border-box;

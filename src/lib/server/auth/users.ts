@@ -29,7 +29,7 @@ export async function getUsuarioByName(usuario: string): Promise<UsuarioPersisti
   return store.items.find((user) => user.usuario === usuario) ?? null;
 }
 
-export async function createUsuario(usuario: string, senha: string): Promise<UsuarioPersistido> {
+export async function createUsuario(usuario: string, senha: string, ativo = true): Promise<UsuarioPersistido> {
   const store = await readUsuarios();
   if (store.items.some((item) => item.usuario === usuario)) {
     throw new Error(`Usuário já cadastrado: ${usuario}`);
@@ -40,7 +40,7 @@ export async function createUsuario(usuario: string, senha: string): Promise<Usu
     usuario,
     salt,
     senhaHash: hash,
-    ativo: true
+    ativo
   };
 
   store.items.push(novoUsuario);
@@ -60,6 +60,29 @@ export async function changeUsuarioPassword(usuario: string, senha: string): Pro
   const { salt, hash } = await hashPassword(senha);
   user.salt = salt;
   user.senhaHash = hash;
+  await writeUsuarios(store);
+}
+
+export async function setUsuarioAtivo(usuario: string, ativo: boolean): Promise<UsuarioPersistido> {
+  const store = await readUsuarios();
+  const user = store.items.find((item) => item.usuario === usuario);
+  if (!user) throw new Error(`Usuário não encontrado: ${usuario}`);
+  if (!ativo && user.ativo && store.items.filter((item) => item.ativo).length <= 1) {
+    throw new Error('Não é possível desativar a última conta ativa.');
+  }
+  user.ativo = ativo;
+  await writeUsuarios(store);
+  return user;
+}
+
+export async function removeUsuario(usuario: string): Promise<void> {
+  const store = await readUsuarios();
+  const index = store.items.findIndex((item) => item.usuario === usuario);
+  if (index < 0) throw new Error(`Usuário não encontrado: ${usuario}`);
+  if (store.items[index].ativo && store.items.filter((item) => item.ativo).length <= 1) {
+    throw new Error('Não é possível remover a última conta ativa.');
+  }
+  store.items.splice(index, 1);
   await writeUsuarios(store);
 }
 
