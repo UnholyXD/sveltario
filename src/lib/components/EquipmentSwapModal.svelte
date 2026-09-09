@@ -3,7 +3,15 @@
 
   type Equipment = { tipo: string; id: string; marca: string; modelo: string; estado: string };
   type Person = { nome: string; usuario: string };
-  let { equipamento, pessoa, onClose, onConfirmed }: { equipamento: Equipment; pessoa: Person; onClose: () => void; onConfirmed: () => void } = $props();
+  type SwapResult = {
+    usuario: string;
+    pessoa: { nome: string; setor?: string | null; cargo?: string | null };
+    equipamentoAnterior: Equipment;
+    equipamentoNovo: Equipment;
+    data: string;
+    executadoPor: string;
+  };
+  let { equipamento, pessoa, onClose, onConfirmed }: { equipamento: Equipment; pessoa: Person; onClose: () => void; onConfirmed: (result: SwapResult) => void } = $props();
 
   let disponiveis = $state<Equipment[]>([]);
   let selecionado = $state('');
@@ -40,7 +48,7 @@
         erro = body?.error ?? 'Não foi possível concluir a troca.';
         return;
       }
-      onConfirmed();
+      onConfirmed(await response.json() as SwapResult);
     } catch {
       erro = 'Não foi possível concluir a troca. Tente novamente.';
     } finally {

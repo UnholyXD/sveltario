@@ -49,7 +49,7 @@
       {/if}
       declaro que recebi da empresa
       <strong>Dinabox Soluções em Automação LTDA - ME</strong>,
-      
+      inscrita no CNPJ <strong>27.246.021/0001-48</strong>,
       os equipamentos e acessórios discriminados abaixo, em perfeitas
       condições de funcionamento e conservação (salvo observações registradas
       neste termo), para uso exclusivo na execução das minhas atividades
@@ -185,7 +185,7 @@
             Dinabox Soluções em Automação LTDA - ME
           </strong>
 
-          
+          <span>CNPJ: 27.246.021/0001-48</span>
           <span>Visto / Aprovação da Equipe de TI</span>
         </div>
       </div>

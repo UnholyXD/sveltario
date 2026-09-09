@@ -12,7 +12,12 @@ function snapshot(tipo: EquipmentType, id: string, value: unknown) {
     tipo,
     id,
     marca: typeof entry.marca === 'string' ? entry.marca : '',
-    modelo: typeof entry.modelo === 'string' ? entry.modelo : ''
+    modelo: typeof entry.modelo === 'string' ? entry.modelo : '',
+    estado: typeof entry.estado === 'string' ? entry.estado : '',
+    patrimonio: typeof entry.patrimonio === 'string' ? entry.patrimonio : '',
+    serviceTag: typeof entry.serviceTag === 'string' ? entry.serviceTag : '',
+    numeroSerie: typeof entry.numeroSerie === 'string' ? entry.numeroSerie : '',
+    categoria: typeof entry.categoria === 'string' ? entry.categoria : ''
   };
 }
 
@@ -64,11 +69,12 @@ export async function POST({ request, cookies }: { request: Request; cookies: an
     if (!pessoa) return json({ error: 'Colaborador não encontrado.' }, { status: 404 });
     if (!currentEquipment || !newEquipment) return json({ error: 'Equipamento não encontrado.' }, { status: 404 });
 
+    const equipamentoAnterior = snapshot(tipo, atualId, currentEquipment);
+    const equipamentoNovo = snapshot(tipo, novoId, newEquipment);
     await swapEquipmentForUser(usuario, tipo, atualId, novoId);
+    let movimentacaoData = new Date().toISOString();
     try {
-      const equipamentoAnterior = snapshot(tipo, atualId, currentEquipment);
-      const equipamentoNovo = snapshot(tipo, novoId, newEquipment);
-      await appendMovimentacao({
+      const movimentacao = await appendMovimentacao({
         acao: 'troca',
         executadoPor: session.usuario,
         equipamento: equipamentoNovo,
@@ -77,6 +83,7 @@ export async function POST({ request, cookies }: { request: Request; cookies: an
         origem: { usuario: pessoa.usuario, nome: pessoa.nome },
         destino: { usuario: pessoa.usuario, nome: pessoa.nome }
       });
+      movimentacaoData = movimentacao.data;
     } catch {
       try {
         await swapEquipmentForUser(usuario, tipo, novoId, atualId);
@@ -86,7 +93,19 @@ export async function POST({ request, cookies }: { request: Request; cookies: an
       return json({ error: 'Não foi possível registrar a troca no histórico.' }, { status: 500 });
     }
 
-    return json({ ok: true, usuario, tipo, atualId, novoId });
+    return json({
+      ok: true,
+      usuario,
+      pessoa: {
+        nome: pessoa.nome,
+        setor: pessoa.setor ?? null,
+        cargo: pessoa.cargo ?? null
+      },
+      equipamentoAnterior,
+      equipamentoNovo,
+      data: movimentacaoData,
+      executadoPor: session.usuario
+    });
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Não foi possível concluir a troca.';
     const isConflict = message.includes('não está mais');

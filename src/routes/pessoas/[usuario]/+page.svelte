@@ -29,6 +29,14 @@
     modelo: string;
     estado: string;
   };
+  type SwapResult = {
+    usuario: string;
+    pessoa: { nome: string; setor?: string | null; cargo?: string | null };
+    equipamentoAnterior: Equipment;
+    equipamentoNovo: Equipment;
+    data: string;
+    executadoPor: string;
+  };
 
   let { data } = $props<{ data: { usuario: string } }>();
   let pessoa = $state<Person | null>(null);
@@ -97,9 +105,17 @@
       equipamento={trocando}
       pessoa={{ nome: pessoa.nome, usuario: pessoa.usuario }}
       onClose={() => trocando = null}
-      onConfirmed={async () => {
+      onConfirmed={async (result: SwapResult) => {
         trocando = null;
         await carregarDetalhe();
+        const params = new URLSearchParams({
+          pessoa: JSON.stringify(result.pessoa),
+          anterior: JSON.stringify(result.equipamentoAnterior),
+          novo: JSON.stringify(result.equipamentoNovo),
+          data: result.data,
+          executadoPor: result.executadoPor
+        });
+        window.open(`/termos/troca/${encodeURIComponent(result.usuario)}?${params.toString()}`, '_blank');
       }}
     />
   {/if}
