@@ -13,6 +13,8 @@
 @import './edit-person-modal.css';
 @import './equipment.css';
 @import './allocation-modal.css';
+@import './swap-modal.css';
+@import './term.css';
 @import './admin-users.css';
 
 * {

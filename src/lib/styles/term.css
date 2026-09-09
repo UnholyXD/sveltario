@@ -1,0 +1,205 @@
+.term-page {
+  min-height: 100vh;
+  padding: var(--space-6);
+  background: #e9edf2;
+  color: #111;
+}
+
+.term-controls {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  width: min(100%, 210mm);
+  margin: 0 auto var(--space-5);
+}
+
+.term-controls a {
+  text-decoration: none;
+}
+
+.term-document {
+  width: min(100%, 210mm);
+  min-height: 297mm;
+  margin: 0 auto;
+  padding: 18mm 16mm;
+  background: #fff;
+  box-shadow: 0 0.25rem 1rem rgba(0, 0, 0, 0.15);
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 11pt;
+  line-height: 1.4;
+}
+
+.term-header {
+  text-align: center;
+}
+
+.term-header h1 {
+  margin: 0 0 1.2rem;
+  font-size: 20pt;
+  line-height: 1.25;
+}
+
+.term-introduction {
+  margin: 1.4rem 0;
+  text-align: justify;
+}
+
+.term-section {
+  margin-top: 1.4rem;
+}
+
+.term-section h2 {
+  margin: 0 0 0.8rem;
+  font-size: 15pt;
+}
+
+.term-equipment-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.term-equipment-table th,
+.term-equipment-table td {
+  padding: 0.55rem 0.5rem;
+  border: 1px solid #b9b9b9;
+  text-align: left;
+  vertical-align: top;
+  overflow-wrap: anywhere;
+}
+
+.term-equipment-table th {
+  background: #f5f5f5;
+}
+
+.term-equipment-table th:nth-child(1) { width: 22%; }
+.term-equipment-table th:nth-child(2) { width: 23%; }
+.term-equipment-table th:nth-child(3) { width: 24%; }
+.term-equipment-table th:nth-child(4) { width: 31%; }
+
+.term-equipment-table tr {
+  break-inside: avoid;
+}
+
+.term-empty {
+  padding: 1rem;
+  border: 1px solid #b9b9b9;
+}
+
+.term-observations {
+  min-height: 8rem;
+  padding-top: 0.5rem;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 1.45rem,
+    #999 1.45rem,
+    #999 1.5rem
+  );
+  background-position: 0 2rem;
+  background-repeat: repeat-y;
+}
+
+.manual-condition {
+  display: inline-block;
+  line-height: 1.55;
+  white-space: nowrap;
+}
+
+.term-responsibilities p {
+  text-align: justify;
+}
+
+.term-responsibilities ul {
+  padding-left: 1.5rem;
+}
+
+.term-responsibilities li {
+  margin-bottom: 0.7rem;
+  padding-left: 0.25rem;
+  text-align: justify;
+}
+
+.blank {
+  display: inline-block;
+  min-width: 8rem;
+  border-bottom: 1px solid #111;
+}
+
+.cpf-blank {
+  min-width: 5.5rem;
+}
+
+.term-date {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.signature-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-top: 4rem;
+}
+
+.signature-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  text-align: center;
+}
+
+.signature-line {
+  height: 2.2rem;
+  border-bottom: 1px solid #111;
+}
+
+.signature-cpf-blank {
+  min-width: 7rem;
+}
+
+@media print {
+  @page {
+    size: A4;
+    margin: 12mm 14mm;
+  }
+
+  :root {
+    color-scheme: light;
+  }
+
+  body {
+    background: #fff;
+  }
+
+  .term-page {
+    padding: 0;
+    background: #fff;
+  }
+
+  .term-controls {
+    display: none;
+  }
+
+  .term-document {
+    width: 100%;
+    min-height: 0;
+    padding: 0;
+    box-shadow: none;
+  }
+
+  .term-section,
+  .term-equipment-table,
+  .signature-grid {
+    break-inside: avoid;
+  }
+
+  .term-equipment-table thead {
+    display: table-header-group;
+  }
+
+  .term-equipment-table tr,
+  .term-responsibilities li {
+    break-inside: avoid;
+  }
+}

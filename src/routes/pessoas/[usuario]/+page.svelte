@@ -6,6 +6,7 @@
   import EditPersonModal from '$lib/components/EditPersonModal.svelte';
   import AllocationModal from '$lib/components/AllocationModal.svelte';
   import DeallocateEquipmentModal from '$lib/components/DeallocateEquipmentModal.svelte';
+  import EquipmentSwapModal from '$lib/components/EquipmentSwapModal.svelte';
 
   type Person = {
     nome: string;
@@ -15,6 +16,7 @@
     idEmpresa?: string | null;
     cracha?: string | null;
     setor?: string | null;
+    cargo?: string | null;
     acessoPortaExterna?: boolean;
     ativo?: boolean;
     observacoes?: string | null;
@@ -37,6 +39,7 @@
   let editando = $state(false);
   let alocando = $state(false);
   let desalocando = $state<Equipment | null>(null);
+  let trocando = $state<Equipment | null>(null);
   let autenticado = $state(false);
 
   async function carregarDetalhe() {
@@ -80,13 +83,25 @@
   {:else if erro || !pessoa}
     <section class="card panel detail-state" role="alert"><p>Não foi possível carregar os dados do colaborador.</p></section>
   {:else}
-    <PersonDetailsCard {pessoa} {autenticado} onEdit={() => editando = true} />
+    <PersonDetailsCard {pessoa} {autenticado} onEdit={() => editando = true} onGenerateTermo={() => window.open(`/termos/equipamentos/${encodeURIComponent(pessoa?.usuario ?? '')}`, '_blank')} />
     <section class="allocated-section card panel" aria-labelledby="allocated-title">
       <div class="allocated-heading">
         <h2 id="allocated-title">Equipamentos alocados</h2>
       </div>
-      <AllocatedEquipmentTable {equipamentos} {autenticado} onAllocate={() => alocando = true} onDeallocate={(equipamento) => desalocando = equipamento} />
+      <AllocatedEquipmentTable {equipamentos} {autenticado} onAllocate={() => alocando = true} onSwap={(equipamento) => trocando = equipamento} onDeallocate={(equipamento) => desalocando = equipamento} />
     </section>
+  {/if}
+
+  {#if trocando && pessoa && autenticado}
+    <EquipmentSwapModal
+      equipamento={trocando}
+      pessoa={{ nome: pessoa.nome, usuario: pessoa.usuario }}
+      onClose={() => trocando = null}
+      onConfirmed={async () => {
+        trocando = null;
+        await carregarDetalhe();
+      }}
+    />
   {/if}
 
   {#if alocando && pessoa && autenticado}

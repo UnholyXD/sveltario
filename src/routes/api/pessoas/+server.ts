@@ -31,6 +31,7 @@ export async function POST({ request, cookies }: { request: Request; cookies: an
       telefone: typeof body.telefone === 'string' ? body.telefone : null,
       cracha: typeof body.cracha === 'string' ? body.cracha : null,
       setor: body.setor === null ? null : typeof body.setor === 'string' ? body.setor : String(body.setor),
+      cargo: body.cargo === null ? null : typeof body.cargo === 'string' ? body.cargo : null,
       acessoPortaExterna: typeof body.acessoPortaExterna === 'boolean' ? body.acessoPortaExterna : false,
       ativo: Boolean(body.ativo),
       observacoes: typeof body.observacoes === 'string' ? body.observacoes : ''

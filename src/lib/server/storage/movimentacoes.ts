@@ -3,7 +3,7 @@ import type { EquipmentType } from '../validation/equipamentos';
 import { dataDirectory, readJsonFile, updateJsonFile } from './json';
 import { nextMovimentacaoId } from './contadores';
 
-export type MovimentacaoTipo = 'alocacao' | 'desalocacao' | 'transferencia';
+export type MovimentacaoTipo = 'alocacao' | 'desalocacao' | 'transferencia' | 'troca';
 
 export interface EquipamentoSnapshot {
   tipo: EquipmentType;
@@ -23,6 +23,8 @@ export interface MovimentacaoRecord {
   data: string;
   executadoPor: string;
   equipamento: EquipamentoSnapshot;
+  equipamentoAnterior?: EquipamentoSnapshot;
+  equipamentoNovo?: EquipamentoSnapshot;
   origem: PessoaSnapshot | null;
   destino: PessoaSnapshot | null;
 }
@@ -55,7 +57,12 @@ export async function listMovimentacoes(): Promise<MovimentacaoRecord[]> {
 }
 
 export async function listMovimentacoesPorEquipamento(tipo: EquipmentType, id: string): Promise<MovimentacaoRecord[]> {
-  return (await listMovimentacoes()).filter((item) => item.equipamento.tipo === tipo && item.equipamento.id === id);
+  return (await listMovimentacoes()).filter(
+    (item) =>
+      (item.equipamento.tipo === tipo && item.equipamento.id === id) ||
+      (item.equipamentoAnterior?.tipo === tipo && item.equipamentoAnterior.id === id) ||
+      (item.equipamentoNovo?.tipo === tipo && item.equipamentoNovo.id === id)
+  );
 }
 
 export async function listMovimentacoesPorPessoa(usuario: string): Promise<MovimentacaoRecord[]> {

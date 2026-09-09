@@ -10,6 +10,7 @@ export interface PessoaRecord {
   telefone?: string | null;
   cracha?: string | null;
   setor: string | null;
+  cargo?: string | null;
   acessoPortaExterna?: boolean;
   ativo: boolean;
   observacoes: string;

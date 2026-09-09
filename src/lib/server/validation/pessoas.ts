@@ -37,7 +37,7 @@ export function assertPessoaPayload(
     throw new Error('Campo acessoPortaExterna deve ser booleano.');
   }
 
-  for (const field of ['email', 'telefone', 'cracha', 'setor']) {
+  for (const field of ['email', 'telefone', 'cracha', 'setor', 'cargo']) {
     if (field in payload && payload[field] !== null && typeof payload[field] !== 'string') {
       throw new Error(`Campo ${field} deve ser texto ou nulo.`);
     }

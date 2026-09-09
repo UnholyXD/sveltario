@@ -7,6 +7,7 @@
     idEmpresa?: string | null;
     cracha?: string | null;
     setor?: string | null;
+    cargo?: string | null;
     acessoPortaExterna?: boolean;
     ativo?: boolean;
     observacoes?: string | null;
@@ -25,6 +26,7 @@
     telefone: '',
     cracha: '',
     setor: '',
+    cargo: '',
     acessoPortaExterna: false,
     ativo: true,
     observacoes: ''
@@ -40,6 +42,7 @@
       telefone: pessoa.telefone ?? '',
       cracha: pessoa.cracha ?? '',
       setor: pessoa.setor ?? '',
+      cargo: pessoa.cargo ?? '',
       acessoPortaExterna: pessoa.acessoPortaExterna ?? false,
       ativo: pessoa.ativo ?? true,
       observacoes: pessoa.observacoes ?? ''
@@ -81,6 +84,7 @@
           telefone: form.telefone.trim() || null,
           cracha: form.cracha.trim() || null,
           setor: form.setor.trim() || null,
+          cargo: form.cargo.trim() || null,
           acessoPortaExterna: form.acessoPortaExterna,
           ativo: form.ativo,
           observacoes: form.observacoes.trim()
@@ -143,6 +147,10 @@
         <div class="form-group">
           <label for="edit-setor">Setor</label>
           <input id="edit-setor" type="text" bind:value={form.setor} disabled={salvando} />
+        </div>
+        <div class="form-group">
+          <label for="edit-cargo">Cargo</label>
+          <input id="edit-cargo" type="text" bind:value={form.cargo} disabled={salvando} />
         </div>
         <div class="form-group">
           <label for="edit-observacoes">Observação</label>

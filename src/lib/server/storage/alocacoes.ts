@@ -121,3 +121,34 @@ export async function replaceEquipmentIdentifier(tipo: EquipmentType, oldId: str
   }
   await writeAlocacoes(store);
 }
+
+export async function swapEquipmentForUser(
+  usuario: string,
+  tipo: EquipmentType,
+  equipamentoAtualId: string,
+  novoEquipamentoId: string
+): Promise<void> {
+  if (equipamentoAtualId === novoEquipamentoId) {
+    throw new Error('O novo equipamento deve ser diferente do atual.');
+  }
+
+  const store = await readAlocacoes();
+  const userAllocation = store.items.find((entry) => entry.usuario === usuario);
+  const currentIndex = userAllocation?.equipamentos.findIndex(
+    (item) => item.tipo === tipo && item.id === equipamentoAtualId
+  ) ?? -1;
+
+  if (!userAllocation || currentIndex < 0) {
+    throw new Error('O equipamento atual não está mais alocado para este colaborador.');
+  }
+
+  const alreadyAllocated = store.items.some((entry) =>
+    entry.equipamentos.some((item) => item.tipo === tipo && item.id === novoEquipamentoId)
+  );
+  if (alreadyAllocated) {
+    throw new Error('O novo equipamento não está mais disponível.');
+  }
+
+  userAllocation.equipamentos[currentIndex] = { tipo, id: novoEquipamentoId };
+  await writeAlocacoes(store);
+}

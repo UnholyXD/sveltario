@@ -8,6 +8,7 @@
     nome: string;
     usuario: string;
     setor?: string | null;
+    cargo?: string | null;
     ativo?: boolean;
   };
 
