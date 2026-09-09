@@ -23,10 +23,52 @@
   let carregando = $state(true);
   let erro = $state(false);
   let filtro = $state<string | null>(null);
+  let busca = $state('');
+  let statusFiltro = $state<'todos' | 'alocados' | 'livres'>('todos');
+  let marcaFiltro = $state('');
+  let modeloFiltro = $state('');
+  let ordenacao = $state<'id' | 'marca' | 'modelo'>('id');
   let modalTipo = $state<string | null>(null);
   let equipamentoEditando = $state<EquipmentRow | null>(null);
 
-  const visiveis = $derived(filtro ? equipamentos.filter((item) => item.tipo === filtro) : equipamentos);
+  const marcas = $derived(
+    [...new Set(equipamentos
+      .filter((item) => !filtro || item.tipo === filtro)
+      .map((item) => item.marca?.trim())
+      .filter((marca): marca is string => Boolean(marca)))]
+      .sort((a, b) => a.localeCompare(b, 'pt-BR', { sensitivity: 'base' }))
+  );
+  const modelos = $derived(
+    [...new Set(equipamentos
+      .filter((item) => (!filtro || item.tipo === filtro) && (!marcaFiltro || item.marca?.trim() === marcaFiltro))
+      .map((item) => item.modelo?.trim())
+      .filter((modelo): modelo is string => Boolean(modelo)))]
+      .sort((a, b) => a.localeCompare(b, 'pt-BR', { sensitivity: 'base' }))
+  );
+  const visiveis = $derived.by(() => {
+    const termo = busca.trim().toLocaleLowerCase('pt-BR');
+    const filtered = equipamentos.filter((item) => {
+      const matchesSearch = !termo || [item.id, item.marca, item.modelo]
+        .some((value) => value?.toLocaleLowerCase('pt-BR').includes(termo));
+      const matchesType = !filtro || item.tipo === filtro;
+      const matchesStatus = statusFiltro === 'todos'
+        || (statusFiltro === 'alocados' ? Boolean(item.alocadoPara) : !item.alocadoPara);
+      const matchesMarca = !marcaFiltro || item.marca?.trim() === marcaFiltro;
+      const matchesModelo = !modeloFiltro || item.modelo?.trim() === modeloFiltro;
+      return matchesSearch && matchesType && matchesStatus && matchesMarca && matchesModelo;
+    });
+
+    return filtered.sort((a, b) => {
+      const first = ordenacao === 'id' ? a.id : ordenacao === 'marca' ? (a.marca ?? '') : (a.modelo ?? '');
+      const second = ordenacao === 'id' ? b.id : ordenacao === 'marca' ? (b.marca ?? '') : (b.modelo ?? '');
+      return first.localeCompare(second, 'pt-BR', { numeric: ordenacao === 'id', sensitivity: 'base' });
+    });
+  });
+
+  $effect(() => {
+    if (marcaFiltro && !marcas.includes(marcaFiltro)) marcaFiltro = '';
+    if (modeloFiltro && !modelos.includes(modeloFiltro)) modeloFiltro = '';
+  });
 
   function isEquipmentRow(value: unknown): value is EquipmentRow {
     if (typeof value !== 'object' || value === null) return false;
@@ -93,8 +135,15 @@
       <p class="eyebrow">Inventário</p>
       <h1>Equipamentos</h1>
     </div>
-    {#if filtro}
-      <button class="button--secondary" type="button" onclick={() => filtro = null}>Limpar filtro</button>
+    {#if filtro || busca || statusFiltro !== 'todos' || marcaFiltro || modeloFiltro || ordenacao !== 'id'}
+      <button class="button--secondary" type="button" onclick={() => {
+        filtro = null;
+        busca = '';
+        statusFiltro = 'todos';
+        marcaFiltro = '';
+        modeloFiltro = '';
+        ordenacao = 'id';
+      }}>Limpar filtros</button>
     {/if}
   </header>
 
@@ -108,6 +157,43 @@
         onAdd={() => abrirCadastro(type.value)}
       />
     {/each}
+  </section>
+
+  <section class="equipment-controls" aria-label="Filtros de equipamentos">
+    <label class="equipment-search">
+      <span>Buscar equipamento</span>
+      <input type="search" placeholder="Identificação, marca ou modelo" bind:value={busca} />
+    </label>
+    <label>
+      <span>Status</span>
+      <select bind:value={statusFiltro}>
+        <option value="todos">Todos</option>
+        <option value="alocados">Alocados</option>
+        <option value="livres">Livres</option>
+      </select>
+    </label>
+    <label>
+      <span>Marca</span>
+      <select bind:value={marcaFiltro}>
+        <option value="">Todas</option>
+        {#each marcas as marca}<option value={marca}>{marca}</option>{/each}
+      </select>
+    </label>
+    <label>
+      <span>Modelo</span>
+      <select bind:value={modeloFiltro}>
+        <option value="">Todos</option>
+        {#each modelos as modelo}<option value={modelo}>{modelo}</option>{/each}
+      </select>
+    </label>
+    <label>
+      <span>Ordenar</span>
+      <select bind:value={ordenacao}>
+        <option value="id">Identificação</option>
+        <option value="marca">Marca</option>
+        <option value="modelo">Modelo</option>
+      </select>
+    </label>
   </section>
 
   {#if carregando}
@@ -124,7 +210,7 @@
     </section>
   {:else if visiveis.length === 0}
     <section class="state-message card panel">
-      <p>Nenhum equipamento encontrado para este tipo.</p>
+      <p>Nenhum equipamento encontrado com os filtros selecionados.</p>
     </section>
   {:else}
     <EquipmentTable equipamentos={visiveis} onSelect={(item) => { equipamentoEditando = item; modalTipo = null; }} />

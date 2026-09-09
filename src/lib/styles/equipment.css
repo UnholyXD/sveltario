@@ -9,6 +9,30 @@
   margin-bottom: var(--space-6);
 }
 
+.equipment-controls {
+  display: grid;
+  grid-template-columns: minmax(18rem, 2fr) repeat(4, minmax(9rem, 1fr));
+  align-items: end;
+  gap: var(--space-3);
+  margin-bottom: var(--space-6);
+}
+
+.equipment-controls label {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.equipment-controls label > span {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.equipment-controls input,
+.equipment-controls select {
+  width: 100%;
+}
+
 .equipment-type-card {
   position: relative;
   display: flex;
@@ -120,12 +144,28 @@
 }
 
 @media (max-width: 1050px) {
+  .equipment-controls {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .equipment-search {
+    grid-column: 1 / -1;
+  }
+
   .equipment-type-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 600px) {
+  .equipment-controls {
+    grid-template-columns: 1fr;
+  }
+
+  .equipment-search {
+    grid-column: auto;
+  }
+
   .equipment-type-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
