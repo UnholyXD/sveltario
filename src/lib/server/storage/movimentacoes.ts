@@ -10,11 +10,18 @@ export interface EquipamentoSnapshot {
   id: string;
   marca: string;
   modelo: string;
+  estado?: string;
+  patrimonio?: string;
+  serviceTag?: string;
+  numeroSerie?: string;
+  categoria?: string;
 }
 
 export interface PessoaSnapshot {
   usuario: string;
   nome: string;
+  setor?: string | null;
+  cargo?: string | null;
 }
 
 export interface MovimentacaoRecord {
@@ -54,6 +61,10 @@ export async function appendMovimentacao(
 
 export async function listMovimentacoes(): Promise<MovimentacaoRecord[]> {
   return (await readMovimentacoes()).items;
+}
+
+export async function getMovimentacaoById(id: string): Promise<MovimentacaoRecord | null> {
+  return (await readMovimentacoes()).items.find((item) => item.id === id) ?? null;
 }
 
 export async function listMovimentacoesPorEquipamento(tipo: EquipmentType, id: string): Promise<MovimentacaoRecord[]> {

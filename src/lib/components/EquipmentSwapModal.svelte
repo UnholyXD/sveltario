@@ -4,12 +4,7 @@
   type Equipment = { tipo: string; id: string; marca: string; modelo: string; estado: string };
   type Person = { nome: string; usuario: string };
   type SwapResult = {
-    usuario: string;
-    pessoa: { nome: string; setor?: string | null; cargo?: string | null };
-    equipamentoAnterior: Equipment;
-    equipamentoNovo: Equipment;
-    data: string;
-    executadoPor: string;
+    movimentacaoId: string;
   };
   let { equipamento, pessoa, onClose, onConfirmed }: { equipamento: Equipment; pessoa: Person; onClose: () => void; onConfirmed: (result: SwapResult) => void } = $props();
 

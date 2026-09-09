@@ -72,7 +72,7 @@ export async function POST({ request, cookies }: { request: Request; cookies: an
     const equipamentoAnterior = snapshot(tipo, atualId, currentEquipment);
     const equipamentoNovo = snapshot(tipo, novoId, newEquipment);
     await swapEquipmentForUser(usuario, tipo, atualId, novoId);
-    let movimentacaoData = new Date().toISOString();
+    let movimentacaoId = '';
     try {
       const movimentacao = await appendMovimentacao({
         acao: 'troca',
@@ -80,10 +80,20 @@ export async function POST({ request, cookies }: { request: Request; cookies: an
         equipamento: equipamentoNovo,
         equipamentoAnterior,
         equipamentoNovo,
-        origem: { usuario: pessoa.usuario, nome: pessoa.nome },
-        destino: { usuario: pessoa.usuario, nome: pessoa.nome }
+        origem: {
+          usuario: pessoa.usuario,
+          nome: pessoa.nome,
+          setor: pessoa.setor ?? null,
+          cargo: pessoa.cargo ?? null
+        },
+        destino: {
+          usuario: pessoa.usuario,
+          nome: pessoa.nome,
+          setor: pessoa.setor ?? null,
+          cargo: pessoa.cargo ?? null
+        }
       });
-      movimentacaoData = movimentacao.data;
+      movimentacaoId = movimentacao.id;
     } catch {
       try {
         await swapEquipmentForUser(usuario, tipo, novoId, atualId);
@@ -95,16 +105,7 @@ export async function POST({ request, cookies }: { request: Request; cookies: an
 
     return json({
       ok: true,
-      usuario,
-      pessoa: {
-        nome: pessoa.nome,
-        setor: pessoa.setor ?? null,
-        cargo: pessoa.cargo ?? null
-      },
-      equipamentoAnterior,
-      equipamentoNovo,
-      data: movimentacaoData,
-      executadoPor: session.usuario
+      movimentacaoId
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Não foi possível concluir a troca.';

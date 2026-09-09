@@ -16,8 +16,8 @@
     return typeof input === 'string' && input.trim() ? input : '—';
   }
 
-  function itemLabel(equipment: Record<string, unknown>): string {
-    const tipo = typeof equipment.tipo === 'string' ? equipment.tipo : '';
+  function itemLabel(equipment: typeof data.anterior): string {
+    const tipo = equipment.tipo;
     return tipo === 'outros'
       ? value(equipment.categoria)
       : labels[tipo] ?? value(tipo);
