@@ -13,7 +13,7 @@
     observacoes?: string | null;
   };
 
-  let { pessoa, autenticado = false, onEdit, onGenerateTermo }: { pessoa: Person; autenticado?: boolean; onEdit: () => void; onGenerateTermo?: () => void } = $props();
+  let { pessoa, autenticado = false, onEdit }: { pessoa: Person; autenticado?: boolean; onEdit: () => void } = $props();
 </script>
 
 <section class="person-details card panel" aria-labelledby="person-name">
@@ -32,9 +32,6 @@
       </div>
       {#if autenticado}
       <div class="person-details__actions">
-      <button class="button--secondary" type="button" onclick={onGenerateTermo}>
-        Gerar termo de equipamentos
-      </button>
       <button class="button--secondary" type="button" aria-label="Editar pessoa" onclick={onEdit}>
         <span aria-hidden="true">⚙</span>
         Editar

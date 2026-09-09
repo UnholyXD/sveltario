@@ -83,12 +83,19 @@
   {:else if erro || !pessoa}
     <section class="card panel detail-state" role="alert"><p>Não foi possível carregar os dados do colaborador.</p></section>
   {:else}
-    <PersonDetailsCard {pessoa} {autenticado} onEdit={() => editando = true} onGenerateTermo={() => window.open(`/termos/equipamentos/${encodeURIComponent(pessoa?.usuario ?? '')}`, '_blank')} />
+    <PersonDetailsCard {pessoa} {autenticado} onEdit={() => editando = true} />
     <section class="allocated-section card panel" aria-labelledby="allocated-title">
       <div class="allocated-heading">
         <h2 id="allocated-title">Equipamentos alocados</h2>
       </div>
-      <AllocatedEquipmentTable {equipamentos} {autenticado} onAllocate={() => alocando = true} onSwap={(equipamento) => trocando = equipamento} onDeallocate={(equipamento) => desalocando = equipamento} />
+      <AllocatedEquipmentTable
+        {equipamentos}
+        {autenticado}
+        onAllocate={() => alocando = true}
+        onGenerateTermo={() => window.open(`/termos/equipamentos/${encodeURIComponent(pessoa?.usuario ?? '')}`, '_blank')}
+        onSwap={(equipamento) => trocando = equipamento}
+        onDeallocate={(equipamento) => desalocando = equipamento}
+      />
     </section>
   {/if}
 

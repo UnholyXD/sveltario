@@ -148,6 +148,14 @@
 }
 
 .allocated-action {
+  margin-top: 0;
+}
+
+.allocated-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  justify-content: flex-start;
   margin-top: var(--space-4);
 }
 

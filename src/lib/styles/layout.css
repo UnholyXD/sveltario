@@ -69,6 +69,14 @@ main {
     width: min(100% - var(--space-6), var(--container-width));
   }
 
+  @media (max-width: 768px) {
+    .container,
+    main {
+      width: calc(100% - var(--space-4));
+      max-width: none;
+    }
+  }
+
   .grid--2,
   .grid--3 {
     grid-template-columns: 1fr;

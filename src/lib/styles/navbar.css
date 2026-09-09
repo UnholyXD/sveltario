@@ -82,48 +82,30 @@ button.navbar-link {
   color: var(--color-danger, #b42318);
 }
 
-@media (max-width: 600px) {
+@media (max-width: 768px) {
   .navbar-shell {
-    width: min(100% - var(--space-6), var(--container-width));
-    align-items: flex-start;
-    flex-direction: column;
-    padding: var(--space-4) 0;
-  }
-
-  @media (max-width: 768px) {
-    .navbar-shell {
-      width: min(100% - var(--space-4), var(--container-width));
-      align-items: center;
-      flex-direction: row;
-      padding: var(--space-2) 0;
-    }
-
-    .navbar-actions {
-      flex: 1;
-      justify-content: space-around;
-      gap: var(--space-1);
-    }
-
-    .navbar-link {
-      min-width: 2.75rem;
-      min-height: 2.75rem;
-      justify-content: center;
-      padding-inline: var(--space-2);
-    }
-
-    .navbar-label,
-    .navbar-user {
-      display: none;
-    }
+    width: min(100% - var(--space-4), var(--container-width));
+    align-items: center;
+    flex-direction: row;
+    padding: var(--space-2) 0;
   }
 
   .navbar-actions {
-    width: 100%;
-    justify-content: space-between;
+    flex: 1;
+    justify-content: space-around;
     gap: var(--space-1);
+    min-width: 0;
   }
 
   .navbar-link {
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+    justify-content: center;
     padding-inline: var(--space-2);
+  }
+
+  .navbar-label,
+  .navbar-user {
+    display: none;
   }
 }

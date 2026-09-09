@@ -77,7 +77,7 @@
       <div class="form-grid">
         {#if mode === 'edit' && tipo !== 'computador' && tipo !== 'monitor'}<div class="form-group"><label for="equipment-id">Identificador</label><input id="equipment-id" value={String(form.id ?? '')} readonly /></div>{/if}
         {#each fields[tipo] ?? [] as [key, label]}
-          <div class="form-group"><label for={`equipment-${key}`}>{label}</label><input id={`equipment-${key}`} type={key === 'memoriaRamGb' ? 'number' : 'text'} value={String(form[key] ?? '')} oninput={(event) => update(key, (event.currentTarget as HTMLInputElement).value)} disabled={salvando || (mode === 'edit' && key === 'id')} /></div>
+          <div class="form-group"><label for={`equipment-${key}`}>{label}</label><input id={`equipment-${key}`} type={key === 'memoriaRamGb' ? 'number' : 'text'} step={key === 'memoriaRamGb' ? 'any' : undefined} min={key === 'memoriaRamGb' ? '0' : undefined} value={String(form[key] ?? '')} oninput={(event) => update(key, (event.currentTarget as HTMLInputElement).value)} disabled={salvando || (mode === 'edit' && key === 'id')} /></div>
         {/each}
         {#if tipo === 'fone'}<label class="toggle" for="equipment-microfone"><input id="equipment-microfone" type="checkbox" checked={Boolean(form.microfone)} onchange={(event) => update('microfone', (event.currentTarget as HTMLInputElement).checked)} />Microfone</label>{/if}
         <div class="form-group"><label for="equipment-estado">Estado</label><select id="equipment-estado" value={form.estado ?? 'bom'} onchange={(event) => update('estado', (event.currentTarget as HTMLSelectElement).value)} disabled={salvando}>{#each states as state}<option value={state}>{state}</option>{/each}</select></div>
@@ -95,7 +95,7 @@
               <div class="form-grid storage-row">
                 <input aria-label="Tipo" placeholder="Tipo" value={String(item.tipo ?? '')} oninput={(event) => updateStorage(index, 'tipo', (event.currentTarget as HTMLInputElement).value)} disabled={salvando} />
                 <input aria-label="Modelo" placeholder="Modelo" value={String(item.modelo ?? '')} oninput={(event) => updateStorage(index, 'modelo', (event.currentTarget as HTMLInputElement).value)} disabled={salvando} />
-                <input aria-label="Capacidade (GB)" type="number" placeholder="GB" value={String(item.capacidadeGb ?? '')} oninput={(event) => updateStorage(index, 'capacidadeGb', (event.currentTarget as HTMLInputElement).value)} disabled={salvando} />
+                <input aria-label="Capacidade (GB)" type="number" step="any" min="0" placeholder="GB" value={String(item.capacidadeGb ?? '')} oninput={(event) => updateStorage(index, 'capacidadeGb', (event.currentTarget as HTMLInputElement).value)} disabled={salvando} />
                 <button class="button--secondary" type="button" onclick={() => removeStorage(index)} disabled={salvando}>Remover</button>
               </div>
             {/each}
