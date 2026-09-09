@@ -53,6 +53,7 @@
   async function salvar() {
     if (!form.estado || (tipo === 'outros' ? !String(form.categoria ?? '').trim() : !String(form.marca ?? '').trim() || !String(form.modelo ?? '').trim())) { erro = 'Preencha os campos obrigatórios.'; return; }
     salvando = true;
+    let savedItem: Record<string, unknown> | null = null;
     try {
       const payload = { ...form, ...(mode === 'edit' ? { identificadorOriginal: originalIdentifier } : {}) };
       const response = await fetch(`/api/equipamentos/${tipo}`, { method: mode === 'edit' ? 'PATCH' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
@@ -67,11 +68,14 @@
         toast.error(erro);
         return;
       }
-      onSaved(await response.json());
-      toast.success(mode === 'edit'
-        ? (form.ativo === false ? 'Equipamento desativado.' : equipment.ativo === false ? 'Equipamento reativado.' : 'Equipamento atualizado com sucesso.')
-        : 'Equipamento cadastrado com sucesso.');
+      savedItem = await response.json() as Record<string, unknown>;
     } catch { erro = 'Não foi possível salvar o equipamento. Tente novamente.'; toast.error(erro); } finally { salvando = false; }
+
+    if (!savedItem) return;
+    toast.success(mode === 'edit'
+      ? (form.ativo === false ? 'Equipamento desativado.' : equipment.ativo === false ? 'Equipamento reativado.' : 'Equipamento atualizado com sucesso.')
+      : 'Equipamento cadastrado com sucesso.');
+    onSaved(savedItem);
   }
 </script>
 
@@ -98,9 +102,9 @@
           <fieldset class="storage-editor"><legend>Armazenamento</legend>
             {#each (form.armazenamento ?? []) as item, index}
               <div class="form-grid storage-row">
-                <input aria-label="Tipo" placeholder="Tipo" value={String(item.tipo ?? '')} oninput={(event) => updateStorage(index, 'tipo', (event.currentTarget as HTMLInputElement).value)} disabled={salvando} />
-                <input aria-label="Modelo" placeholder="Modelo" value={String(item.modelo ?? '')} oninput={(event) => updateStorage(index, 'modelo', (event.currentTarget as HTMLInputElement).value)} disabled={salvando} />
-                <input aria-label="Capacidade (GB)" type="number" step="any" min="0" placeholder="GB" value={String(item.capacidadeGb ?? '')} oninput={(event) => updateStorage(index, 'capacidadeGb', (event.currentTarget as HTMLInputElement).value)} disabled={salvando} />
+                <input class="storage-input" type="text" aria-label="Tipo" placeholder="Tipo" value={String(item.tipo ?? '')} oninput={(event) => updateStorage(index, 'tipo', (event.currentTarget as HTMLInputElement).value)} disabled={salvando} />
+                <input class="storage-input" type="text" aria-label="Modelo" placeholder="Modelo" value={String(item.modelo ?? '')} oninput={(event) => updateStorage(index, 'modelo', (event.currentTarget as HTMLInputElement).value)} disabled={salvando} />
+                <input class="storage-input" aria-label="Capacidade (GB)" type="number" step="any" min="0" placeholder="GB" value={String(item.capacidadeGb ?? '')} oninput={(event) => updateStorage(index, 'capacidadeGb', (event.currentTarget as HTMLInputElement).value)} disabled={salvando} />
                 <button class="button--secondary" type="button" onclick={() => removeStorage(index)} disabled={salvando}>Remover</button>
               </div>
             {/each}

@@ -114,6 +114,9 @@
 
 .storage-editor {
   display: grid;
+  grid-column: 1 / -1;
+  width: 100%;
+  min-width: 0;
   gap: var(--space-3);
   margin: var(--space-5) 0 0;
   padding: var(--space-4);
@@ -128,6 +131,11 @@
 
 .storage-row {
   grid-template-columns: 1fr 1fr 8rem auto;
+  min-width: 0;
+}
+
+.storage-input {
+  min-width: 0;
 }
 
 .equipment-table-wrapper {

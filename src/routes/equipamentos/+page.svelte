@@ -93,11 +93,13 @@
   }
 
   function atualizarEquipamento(item: Record<string, unknown>) {
-    const tipo = equipamentoEditando?.tipo;
-    if (!tipo) return;
+    const editando = equipamentoEditando;
+    const tipo = editando?.tipo;
+    if (!tipo || !editando) return;
     const key = tipo === 'computador' || tipo === 'monitor' ? 'patrimonio' : 'id';
     const id = String(item[key] ?? '');
-    equipamentos = equipamentos.map((current) => current === equipamentoEditando ? { ...item, tipo, id } as EquipmentRow : current);
+    const editedId = editando.id;
+    equipamentos = equipamentos.map((current) => current.tipo === tipo && current.id === editedId ? { ...item, tipo, id } as EquipmentRow : current);
     equipamentoEditando = null;
   }
 
