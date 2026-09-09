@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { toast } from 'svelte-sonner';
   type Person = {
     nome: string;
     usuario: string;
@@ -75,17 +76,21 @@
 
       if (response.status === 409) {
         erro = 'Esse usuário já está cadastrado.';
+        toast.error(erro);
         return;
       }
 
       if (!response.ok) {
         erro = 'Não foi possível cadastrar o colaborador.';
+        toast.error(erro);
         return;
       }
 
       onSaved(await response.json());
+      toast.success('Colaborador cadastrado com sucesso.');
     } catch {
       erro = 'Não foi possível cadastrar o colaborador. Tente novamente.';
+      toast.error(erro);
     } finally {
       salvando = false;
     }

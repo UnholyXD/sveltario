@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { normalizeSearchText } from '$lib/utils/text';
+  import { toast } from 'svelte-sonner';
   type Person = { nome: string; usuario: string };
   type Equipment = { tipo: string; id?: string; patrimonio?: string; marca?: string; modelo?: string; estado?: string; alocadoPara?: unknown };
   const types = [
@@ -29,7 +31,7 @@
       const response = await fetch('/api/pessoas');
       if (!response.ok) throw new Error();
       const data: unknown = await response.json();
-      resultados = Array.isArray(data) ? data.filter((item): item is Person => typeof item === 'object' && item !== null && typeof (item as Record<string, unknown>).nome === 'string' && typeof (item as Record<string, unknown>).usuario === 'string').filter((item) => `${item.nome} ${item.usuario}`.toLowerCase().includes(query.trim().toLowerCase())) : [];
+      resultados = Array.isArray(data) ? data.filter((item): item is Person => typeof item === 'object' && item !== null && typeof (item as Record<string, unknown>).nome === 'string' && typeof (item as Record<string, unknown>).usuario === 'string').filter((item) => normalizeSearchText(`${item.nome} ${item.usuario}`).includes(normalizeSearchText(query.trim()))) : [];
       if (!resultados.length) erro = 'Nenhum colaborador encontrado.';
     } catch { erro = 'Não foi possível buscar colaboradores.'; } finally { buscando = false; }
   }
@@ -78,7 +80,8 @@
       if (response.status === 401) { window.location.assign('/login'); return; }
       if (!response.ok) throw new Error();
       onSaved?.(); onClose();
-    } catch { erro = 'Não foi possível concluir a alocação. Verifique a disponibilidade e tente novamente.'; } finally { salvando = false; }
+      toast.success('Equipamento(s) alocado(s) com sucesso.');
+    } catch { erro = 'Não foi possível concluir a alocação. Verifique a disponibilidade e tente novamente.'; toast.error(erro); } finally { salvando = false; }
   }
 </script>
 

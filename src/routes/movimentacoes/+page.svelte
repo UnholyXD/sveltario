@@ -1,6 +1,7 @@
 <script lang="ts">
   import Navbar from '$lib/components/Navbar.svelte';
   import type { PageData } from './$types';
+  import { normalizeSearchText } from '$lib/utils/text';
 
   let { data }: { data: PageData } = $props();
 
@@ -42,12 +43,12 @@
   }
 
   function personText(person: typeof data.movimentacoes[number]['origem']): string {
-    return person ? `${person.nome} (${person.usuario})` : '—';
+    return person ? `${person.nome} (${person.usuario})` : 'Inventário';
   }
 
   function originText(movement: typeof data.movimentacoes[number]): string {
     return movement.acao === 'alocacao' || movement.acao === 'troca'
-      ? (movement.acao === 'troca' ? personText(movement.origem ?? movement.destino) : '—')
+      ? (movement.acao === 'troca' ? personText(movement.origem ?? movement.destino) : 'Inventário')
       : personText(movement.origem);
   }
 
@@ -83,14 +84,14 @@
       equipmentSearchText(movement.equipamento),
       equipmentSearchText(movement.equipamentoAnterior),
       equipmentSearchText(movement.equipamentoNovo)
-    ].map(text).join(' ').toLocaleLowerCase('pt-BR');
+    ].map(text).join(' ');
   }
 
   const movimentacoesVisiveis = $derived.by(() => {
-    const termo = busca.trim().toLocaleLowerCase('pt-BR');
+    const termo = normalizeSearchText(busca.trim());
     return data.movimentacoes
       .filter((movement) => {
-        const matchesSearch = !termo || searchableText(movement).includes(termo);
+        const matchesSearch = !termo || normalizeSearchText(searchableText(movement)).includes(termo);
         const matchesAction = !acaoFiltro || movement.acao === acaoFiltro;
         const matchesType = !tipoFiltro || equipmentForFilter(movement).includes(tipoFiltro);
         const movementDate = datePart(movement.data);
@@ -189,7 +190,7 @@
                   {/if}
                 </td>
                 <td>{originText(movement)}</td>
-                <td>{movement.acao === 'desalocacao' ? '—' : personText(movement.destino)}</td>
+                <td>{personText(movement.destino)}</td>
                 <td>{movement.executadoPor || '—'}</td>
               </tr>
             {/each}

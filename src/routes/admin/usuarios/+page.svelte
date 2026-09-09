@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import Navbar from '$lib/components/Navbar.svelte';
+  import { toast } from 'svelte-sonner';
 
   type Usuario = { usuario: string; ativo: boolean };
   let usuarios = $state<Usuario[]>([]);
@@ -35,10 +36,11 @@
         method: isNew ? 'POST' : 'PATCH', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(isNew ? { usuario: nome.trim(), senha, confirmarSenha, ativo: novoAtivo } : { senha, confirmarSenha })
       });
-      const body = await response.json();
-      if (!response.ok) throw new Error(body.error ?? 'Não foi possível salvar.');
+      await response.json();
+      if (!response.ok) throw new Error('Não foi possível salvar o usuário.');
       await carregar(); fecharModal();
-    } catch (error) { erro = error instanceof Error ? error.message : 'Não foi possível salvar.'; }
+      toast.success(isNew ? 'Usuário criado com sucesso.' : 'Senha alterada com sucesso.');
+    } catch (error) { erro = error instanceof Error ? error.message : 'Não foi possível salvar o usuário.'; toast.error(erro); }
     finally { salvando = false; }
   }
 
@@ -47,15 +49,17 @@
     const response = await fetch(`/api/admin/usuarios/${encodeURIComponent(user.usuario)}`, {
       method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ativo: !user.ativo })
     });
-    if (!response.ok) { const body = await response.json(); erro = body.error ?? 'Não foi possível alterar o estado.'; return; }
+    if (!response.ok) { erro = 'Não foi possível alterar o estado do usuário.'; toast.error(erro); return; }
     await carregar();
+    toast.success(user.ativo ? 'Usuário desativado.' : 'Usuário reativado.');
   }
 
   async function remover(user: Usuario) {
     if (!confirm(`Remover o usuário ${user.usuario}?`)) return;
     const response = await fetch(`/api/admin/usuarios/${encodeURIComponent(user.usuario)}`, { method: 'DELETE' });
-    if (!response.ok) { const body = await response.json(); erro = body.error ?? 'Não foi possível remover.'; return; }
+    if (!response.ok) { erro = 'Não foi possível remover o usuário.'; toast.error(erro); return; }
     await carregar();
+    toast.success('Usuário removido.');
   }
 </script>
 

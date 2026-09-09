@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
+  import { toast } from 'svelte-sonner';
 
   type Equipment = { tipo: string; id: string; marca: string; modelo: string; estado: string };
   type Person = { nome: string; usuario: string };
@@ -41,11 +42,14 @@
       if (!response.ok) {
         const body = await response.json().catch(() => null) as { error?: string } | null;
         erro = body?.error ?? 'Não foi possível concluir a troca.';
+        toast.error(erro);
         return;
       }
       onConfirmed(await response.json() as SwapResult);
+      toast.success('Equipamento trocado com sucesso.');
     } catch {
       erro = 'Não foi possível concluir a troca. Tente novamente.';
+      toast.error(erro);
     } finally {
       salvando = false;
     }

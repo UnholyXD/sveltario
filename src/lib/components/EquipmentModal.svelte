@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { toast } from 'svelte-sonner';
   export type EquipmentModalProps = {
     tipo: string;
     mode?: 'create' | 'edit';
@@ -63,10 +64,14 @@
           : response.status === 409
             ? 'Já existe outro equipamento com este patrimônio.'
             : 'Não foi possível salvar o equipamento.';
+        toast.error(erro);
         return;
       }
       onSaved(await response.json());
-    } catch { erro = 'Não foi possível salvar o equipamento. Tente novamente.'; } finally { salvando = false; }
+      toast.success(mode === 'edit'
+        ? (form.ativo === false ? 'Equipamento desativado.' : equipment.ativo === false ? 'Equipamento reativado.' : 'Equipamento atualizado com sucesso.')
+        : 'Equipamento cadastrado com sucesso.');
+    } catch { erro = 'Não foi possível salvar o equipamento. Tente novamente.'; toast.error(erro); } finally { salvando = false; }
   }
 </script>
 

@@ -9,6 +9,7 @@
   import MouseCreateModal from '$lib/components/MouseCreateModal.svelte';
   import KeyboardCreateModal from '$lib/components/KeyboardCreateModal.svelte';
   import OtherCreateModal from '$lib/components/OtherCreateModal.svelte';
+  import { normalizeSearchText } from '$lib/utils/text';
 
   const types = [
     { value: 'computador', label: 'Computador' },
@@ -47,10 +48,10 @@
       .sort((a, b) => a.localeCompare(b, 'pt-BR', { sensitivity: 'base' }))
   );
   const visiveis = $derived.by(() => {
-    const termo = busca.trim().toLocaleLowerCase('pt-BR');
+    const termo = normalizeSearchText(busca.trim());
     const filtered = equipamentos.filter((item) => {
       const matchesSearch = !termo || [item.id, item.marca, item.modelo]
-        .some((value) => value?.toLocaleLowerCase('pt-BR').includes(termo));
+      .some((value) => normalizeSearchText(value).includes(termo));
       const matchesType = !filtro || item.tipo === filtro;
       const matchesActivity = atividadeFiltro === 'inativos' ? item.ativo === false : atividadeFiltro === 'todos' || item.ativo !== false;
       const matchesAllocation = statusFiltro === 'alocados' || statusFiltro === 'livres'

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { toast } from 'svelte-sonner';
   type Person = {
     nome: string;
     usuario: string;
@@ -98,13 +99,20 @@
 
       if (!response.ok) {
         erro = 'Não foi possível salvar as alterações.';
+        toast.error(erro);
         return;
       }
 
       const atualizada = await response.json();
       onSaved(atualizada);
+      toast.success(form.ativo === false
+        ? 'Colaborador desativado.'
+        : pessoa.ativo === false
+          ? 'Colaborador reativado.'
+          : 'Colaborador atualizado com sucesso.');
     } catch {
       erro = 'Não foi possível salvar as alterações. Tente novamente.';
+      toast.error(erro);
     } finally {
       salvando = false;
     }

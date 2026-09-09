@@ -2,6 +2,7 @@
   import { onMount } from 'svelte';
   import Navbar from '$lib/components/Navbar.svelte';
   import PersonCard from '$lib/components/PersonCard.svelte';
+  import { normalizeSearchText } from '$lib/utils/text';
   import AddPersonModal from '$lib/components/AddPersonModal.svelte';
 
   type Person = {
@@ -21,15 +22,15 @@
   let filtroEstado = $state<'ativos' | 'inativos' | 'todos'>('ativos');
 
   const pessoasVisiveis = $derived.by(() => {
-    const termo = busca.trim().toLocaleLowerCase('pt-BR');
+    const termo = normalizeSearchText(busca.trim());
     const porEstado = pessoas.filter((pessoa) =>
       filtroEstado === 'todos' ||
       (filtroEstado === 'ativos' ? pessoa.ativo === true : pessoa.ativo === false)
     );
     const filtradas = termo
       ? porEstado.filter((pessoa) =>
-          pessoa.nome.toLocaleLowerCase('pt-BR').includes(termo) ||
-          pessoa.usuario.toLocaleLowerCase('pt-BR').includes(termo)
+          normalizeSearchText(pessoa.nome).includes(termo) ||
+          normalizeSearchText(pessoa.usuario).includes(termo)
         )
       : [...porEstado];
 

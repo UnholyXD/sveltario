@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { toast } from 'svelte-sonner';
   type Equipment = { tipo: string; id: string; marca: string; modelo: string };
   type Person = { nome: string; usuario: string };
 
@@ -32,15 +33,19 @@
       }
       if (response.status === 404) {
         erro = 'Este equipamento não está mais alocado para este colaborador.';
+        toast.error(erro);
         return;
       }
       if (!response.ok) {
         erro = 'Não foi possível desalocar o equipamento.';
+        toast.error(erro);
         return;
       }
       onConfirmed();
+      toast.success('Equipamento desalocado.');
     } catch {
       erro = 'Não foi possível desalocar o equipamento. Tente novamente.';
+      toast.error(erro);
     } finally {
       salvando = false;
     }
