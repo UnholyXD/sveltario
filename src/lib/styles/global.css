@@ -16,6 +16,7 @@
 @import './swap-modal.css';
 @import './term.css';
 @import './admin-users.css';
+@import './movements.css';
 
 * {
   box-sizing: border-box;

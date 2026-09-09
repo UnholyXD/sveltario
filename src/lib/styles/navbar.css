@@ -44,6 +44,10 @@ button.navbar-link {
   stroke-width: 1.8;
 }
 
+.navbar-link {
+  white-space: nowrap;
+}
+
 .navbar-link:hover,
 .navbar-link.active {
   background: var(--color-surface-muted);
@@ -84,6 +88,33 @@ button.navbar-link {
     align-items: flex-start;
     flex-direction: column;
     padding: var(--space-4) 0;
+  }
+
+  @media (max-width: 768px) {
+    .navbar-shell {
+      width: min(100% - var(--space-4), var(--container-width));
+      align-items: center;
+      flex-direction: row;
+      padding: var(--space-2) 0;
+    }
+
+    .navbar-actions {
+      flex: 1;
+      justify-content: space-around;
+      gap: var(--space-1);
+    }
+
+    .navbar-link {
+      min-width: 2.75rem;
+      min-height: 2.75rem;
+      justify-content: center;
+      padding-inline: var(--space-2);
+    }
+
+    .navbar-label,
+    .navbar-user {
+      display: none;
+    }
   }
 
   .navbar-actions {
