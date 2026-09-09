@@ -40,7 +40,7 @@ export async function GET({ url }: { url: URL }) {
         const id = String(entry[key] ?? '');
         return { ...entry, tipo, id };
       })
-      .filter((item) => item.id && item.id !== atualId && !allocatedIds.has(item.id));
+      .filter((item) => item.id && item.id !== atualId && (item as Record<string, unknown>).ativo !== false && !allocatedIds.has(item.id));
     return json(available);
   } catch {
     return json({ error: 'Não foi possível carregar os equipamentos disponíveis.' }, { status: 500 });
@@ -68,6 +68,9 @@ export async function POST({ request, cookies }: { request: Request; cookies: an
     ]);
     if (!pessoa) return json({ error: 'Colaborador não encontrado.' }, { status: 404 });
     if (!currentEquipment || !newEquipment) return json({ error: 'Equipamento não encontrado.' }, { status: 404 });
+    if ((newEquipment as Record<string, unknown>).ativo === false) {
+      return json({ error: 'O novo equipamento está inativo.' }, { status: 409 });
+    }
 
     const equipamentoAnterior = snapshot(tipo, atualId, currentEquipment);
     const equipamentoNovo = snapshot(tipo, novoId, newEquipment);

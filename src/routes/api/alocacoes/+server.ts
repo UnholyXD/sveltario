@@ -40,7 +40,7 @@ export async function POST({ request, cookies }: { request: Request; cookies: an
       const item = await getEquipmentByTypeAndId(equipamento.tipo, equipamento.id);
       const owner = await findEquipmentOwner(equipamento.tipo, equipamento.id);
       const jaNaPessoa = atual?.equipamentos.some((entry) => entry.tipo === equipamento.tipo && entry.id === equipamento.id);
-      if (!item || owner || jaNaPessoa) {
+      if (!item || (item as Record<string, unknown>).ativo === false || owner || jaNaPessoa) {
         indisponiveis.push(`${equipamento.tipo}:${equipamento.id}`);
       } else {
         const entry = item as Record<string, unknown>;

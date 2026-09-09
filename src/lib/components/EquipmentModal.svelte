@@ -18,12 +18,12 @@
     outros: [['categoria', 'Categoria'], ['marca', 'Marca'], ['modelo', 'Modelo'], ['numeroSerie', 'Número de série'], ['patrimonio', 'Patrimônio']]
   };
   const defaults: Record<string, Record<string, unknown>> = {
-    computador: { patrimonio: '', marca: '', modelo: '', serviceTag: '', hostname: '', processador: '', memoriaRamGb: '', estado: 'bom', observacoes: '', armazenamento: [] },
-    monitor: { patrimonio: '', marca: '', modelo: '', numeroSerie: '', estado: 'bom', observacoes: '' },
-    mouse: { marca: '', modelo: '', modeloTecnico: '', numeroSerie: '', partNumber: '', pid: '', conexao: '', estado: 'bom', observacoes: '' },
-    teclado: { marca: '', modelo: '', modeloTecnico: '', numeroSerie: '', partNumber: '', pid: '', conexao: '', layout: '', estado: 'bom', observacoes: '' },
-    fone: { marca: '', modelo: '', numeroSerie: '', tipo: 'headset', conexao: '', microfone: false, estado: 'bom', observacoes: '' },
-    outros: { categoria: '', marca: '', modelo: '', numeroSerie: '', patrimonio: '', estado: 'bom', observacoes: '' }
+    computador: { patrimonio: '', marca: '', modelo: '', serviceTag: '', hostname: '', processador: '', memoriaRamGb: '', estado: 'bom', ativo: true, observacoes: '', armazenamento: [] },
+    monitor: { patrimonio: '', marca: '', modelo: '', numeroSerie: '', estado: 'bom', ativo: true, observacoes: '' },
+    mouse: { marca: '', modelo: '', modeloTecnico: '', numeroSerie: '', partNumber: '', pid: '', conexao: '', estado: 'bom', ativo: true, observacoes: '' },
+    teclado: { marca: '', modelo: '', modeloTecnico: '', numeroSerie: '', partNumber: '', pid: '', conexao: '', layout: '', estado: 'bom', ativo: true, observacoes: '' },
+    fone: { marca: '', modelo: '', numeroSerie: '', tipo: 'headset', conexao: '', microfone: false, estado: 'bom', ativo: true, observacoes: '' },
+    outros: { categoria: '', marca: '', modelo: '', numeroSerie: '', patrimonio: '', estado: 'bom', ativo: true, observacoes: '' }
   };
 
   function createInitialForm(equipmentType: string, selectedEquipment: Record<string, unknown>) {
@@ -81,6 +81,13 @@
         {/each}
         {#if tipo === 'fone'}<label class="toggle" for="equipment-microfone"><input id="equipment-microfone" type="checkbox" checked={Boolean(form.microfone)} onchange={(event) => update('microfone', (event.currentTarget as HTMLInputElement).checked)} />Microfone</label>{/if}
         <div class="form-group"><label for="equipment-estado">Estado</label><select id="equipment-estado" value={form.estado ?? 'bom'} onchange={(event) => update('estado', (event.currentTarget as HTMLSelectElement).value)} disabled={salvando}>{#each states as state}<option value={state}>{state}</option>{/each}</select></div>
+        {#if mode === 'edit'}
+          <label class="toggle" for="equipment-ativo">
+            <input id="equipment-ativo" type="checkbox" checked={form.ativo !== false} onchange={(event) => update('ativo', (event.currentTarget as HTMLInputElement).checked)} disabled={salvando} />
+            <span class="toggle__track" aria-hidden="true"></span>
+            Equipamento ativo
+          </label>
+        {/if}
         <div class="form-group"><label for="equipment-observacoes">Observações</label><textarea id="equipment-observacoes" oninput={(event) => update('observacoes', (event.currentTarget as HTMLTextAreaElement).value)} disabled={salvando}>{String(form.observacoes ?? '')}</textarea></div>
         {#if tipo === 'computador'}
           <fieldset class="storage-editor"><legend>Armazenamento</legend>

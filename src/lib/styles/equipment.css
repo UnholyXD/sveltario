@@ -143,6 +143,16 @@
   white-space: nowrap;
 }
 
+.equipment-inactive-badge {
+  display: inline-block;
+  margin-left: var(--space-2);
+  padding: 0.15rem var(--space-2);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-muted);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
 @media (max-width: 1050px) {
   .equipment-controls {
     grid-template-columns: repeat(3, minmax(0, 1fr));

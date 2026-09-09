@@ -5,6 +5,7 @@
     marca?: string;
     modelo?: string;
     estado?: string;
+    ativo?: boolean;
     alocadoPara?: { nome: string; usuario: string } | null;
   };
 
@@ -49,7 +50,10 @@
           <td>{equipamento.marca || '—'}</td>
           <td>{equipamento.modelo || '—'}</td>
           <td>{equipamento.alocadoPara ? `${equipamento.alocadoPara.nome} (${equipamento.alocadoPara.usuario})` : 'Disponível'}</td>
-          <td>{states[equipamento.estado ?? ''] ?? equipamento.estado ?? '—'}</td>
+          <td>
+            {states[equipamento.estado ?? ''] ?? equipamento.estado ?? '—'}
+            {#if equipamento.ativo === false}<span class="equipment-inactive-badge">Inativo</span>{/if}
+          </td>
         </tr>
       {/each}
     </tbody>

@@ -130,7 +130,7 @@ export async function POST({ params, request, cookies }: { params: Record<string
     }
 
     const items = await listEquipmentByType(tipo);
-    const normalized = normalizePayload(tipo, payload as Record<string, unknown>);
+    const normalized = { ...normalizePayload(tipo, payload as Record<string, unknown>), ativo: true };
 
     if (tipo === 'computador' || tipo === 'monitor') {
       const normalizedRecord = normalized as Record<string, unknown>;
@@ -168,6 +168,12 @@ export async function PATCH({ params, request, cookies }: { params: Record<strin
     if (!oldId || index < 0) return json({ error: 'Equipamento não encontrado.' }, { status: 404 });
     const { identificadorOriginal: _identificadorOriginal, ...equipmentPayload } = payload;
     const normalized = normalizePayload(tipo, equipmentPayload) as Record<string, unknown>;
+    if (normalized.ativo !== undefined && typeof normalized.ativo !== 'boolean') {
+      return json({ error: 'O campo ativo deve ser booleano.' }, { status: 400 });
+    }
+    if (normalized.ativo === false && await findEquipmentOwner(tipo, oldId)) {
+      return json({ error: 'Este equipamento está alocado. Desaloque o equipamento antes de desativá-lo.' }, { status: 409 });
+    }
     const nextId = String(normalized[key] ?? '');
     if ((tipo === 'computador' || tipo === 'monitor') && items.some((item, itemIndex) => itemIndex !== index && String(item[key] ?? '') === nextId)) {
       return json({ error: 'Patrimônio já cadastrado. Informe um patrimônio diferente.' }, { status: 409 });

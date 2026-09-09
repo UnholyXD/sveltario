@@ -24,6 +24,7 @@
   let erro = $state(false);
   let filtro = $state<string | null>(null);
   let busca = $state('');
+  let atividadeFiltro = $state<'todos' | 'inativos' | 'ativos'>('ativos');
   let statusFiltro = $state<'todos' | 'alocados' | 'livres'>('todos');
   let marcaFiltro = $state('');
   let modeloFiltro = $state('');
@@ -51,11 +52,13 @@
       const matchesSearch = !termo || [item.id, item.marca, item.modelo]
         .some((value) => value?.toLocaleLowerCase('pt-BR').includes(termo));
       const matchesType = !filtro || item.tipo === filtro;
-      const matchesStatus = statusFiltro === 'todos'
-        || (statusFiltro === 'alocados' ? Boolean(item.alocadoPara) : !item.alocadoPara);
+      const matchesActivity = atividadeFiltro === 'inativos' ? item.ativo === false : atividadeFiltro === 'todos' || item.ativo !== false;
+      const matchesAllocation = statusFiltro === 'alocados' || statusFiltro === 'livres'
+        ? (statusFiltro === 'alocados' ? Boolean(item.alocadoPara) : !item.alocadoPara)
+        : true;
       const matchesMarca = !marcaFiltro || item.marca?.trim() === marcaFiltro;
       const matchesModelo = !modeloFiltro || item.modelo?.trim() === modeloFiltro;
-      return matchesSearch && matchesType && matchesStatus && matchesMarca && matchesModelo;
+      return matchesSearch && matchesType && matchesActivity && matchesAllocation && matchesMarca && matchesModelo;
     });
 
     return filtered.sort((a, b) => {
@@ -77,7 +80,7 @@
   }
 
   function countByType(tipo: string): number {
-    return equipamentos.filter((item) => item.tipo === tipo).length;
+    return equipamentos.filter((item) => item.tipo === tipo && item.ativo !== false).length;
   }
 
   function adicionarEquipamento(item: Record<string, unknown>) {
@@ -135,10 +138,11 @@
       <p class="eyebrow">Inventário</p>
       <h1>Equipamentos</h1>
     </div>
-    {#if filtro || busca || statusFiltro !== 'todos' || marcaFiltro || modeloFiltro || ordenacao !== 'id'}
+    {#if filtro || busca || atividadeFiltro !== 'ativos' || statusFiltro !== 'todos' || marcaFiltro || modeloFiltro || ordenacao !== 'id'}
       <button class="button--secondary" type="button" onclick={() => {
         filtro = null;
         busca = '';
+        atividadeFiltro = 'ativos';
         statusFiltro = 'todos';
         marcaFiltro = '';
         modeloFiltro = '';
@@ -165,11 +169,19 @@
       <input type="search" placeholder="Identificação, marca ou modelo" bind:value={busca} />
     </label>
     <label>
-      <span>Status</span>
+      <span>Disponibilidade</span>
       <select bind:value={statusFiltro}>
         <option value="todos">Todos</option>
         <option value="alocados">Alocados</option>
         <option value="livres">Livres</option>
+      </select>
+    </label>
+    <label>
+      <span>Atividade</span>
+      <select bind:value={atividadeFiltro}>
+        <option value="ativos">Ativos</option>
+        <option value="inativos">Inativos</option>
+        <option value="todos">Todos</option>
       </select>
     </label>
     <label>

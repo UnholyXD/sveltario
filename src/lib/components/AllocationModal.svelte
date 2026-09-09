@@ -47,7 +47,7 @@
             if (typeof item !== 'object' || item === null) return false;
             const equipamento = item as Record<string, unknown>;
             const identificacao = tipo === 'computador' || tipo === 'monitor' ? equipamento.patrimonio : equipamento.id;
-            return typeof identificacao === 'string' && identificacao.length > 0 && !equipamento.alocadoPara;
+            return typeof identificacao === 'string' && identificacao.length > 0 && equipamento.ativo !== false && !equipamento.alocadoPara;
           })
         : [];
     } catch { erro = 'Não foi possível carregar os equipamentos disponíveis.'; } finally { carregando = false; }
